@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What data exists</title>
+<meta name="description" content="The data we hold on Mexico's enforcement against drug supply, from precursor chemicals to arrests, by stage and agency.">
+<link rel="stylesheet" href="site.css">
+<style>
+.pg-title { font-family: var(--font-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+.pg-intro { margin: 8px 0 0; max-width: 72ch; line-height: 1.55; color: var(--color-fg-muted); }
+.pg-intro b { color: var(--color-fg); font-weight: 600; }
+.lgd { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--color-fg-muted); margin: 22px 0 10px; }
+.lgd span.k { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; border: 1px solid var(--color-border-line); }
+.mtx-scroll { overflow-x: auto; padding-bottom: 4px; }
+.mtx { display: grid; grid-template-columns: 128px repeat(6, minmax(104px, 1fr)); gap: 4px; min-width: 780px; font-size: 13px; }
+.mtx .h { color: var(--color-fg-muted); font-size: 12px; padding: 4px 2px 6px; text-align: center; display: flex; align-items: flex-end; justify-content: center; line-height: 1.25; }
+.mtx .r { color: var(--color-fg); font-weight: 600; padding: 6px 6px 6px 0; display: flex; align-items: center; position: sticky; left: 0; background: var(--color-bg); z-index: 1; }
+.cell { font: inherit; font-size: 12.5px; border-radius: 6px; padding: 6px 4px; text-align: center; cursor: pointer; border: 1px solid transparent; line-height: 1.3; min-height: 40px; display: flex; align-items: center; justify-content: center; }
+.cell:hover { border-color: var(--color-fg-muted); }
+.cell:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 1px; }
+.cell[aria-pressed="true"] { outline: 2px solid var(--color-fg); outline-offset: 1px; }
+.fine { background: var(--lvl-fine-bg); color: var(--lvl-fine-fg); }
+.coarse { background: var(--lvl-coarse-bg); color: var(--lvl-coarse-fg); }
+.part { background: var(--lvl-part-bg); color: var(--lvl-part-fg); }
+.none { background: var(--color-panel); color: var(--color-fg-muted); }
+.panel { margin-top: 18px; background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 12px; padding: 16px 20px; font-size: 14px; color: var(--color-fg-muted); scroll-margin-top: 16px; }
+.panel h2 { font-size: 17px; font-weight: 600; color: var(--color-fg); margin: 0 0 6px; }
+.panel .lead { margin: 0 0 8px; }
+.src { padding: 10px 0; border-top: 1px solid var(--color-border-line); }
+.src .n { color: var(--color-fg); font-weight: 600; }
+.bar { position: relative; height: 8px; background: var(--color-bg); border-radius: 4px; margin: 6px 0 2px; overflow: hidden; }
+.bar .amlo { position: absolute; top: 0; bottom: 0; background: var(--amlo-band); }
+.bar .cov { position: absolute; top: 0; bottom: 0; border-radius: 4px; background: var(--bar-fill); }
+.ax { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-fg-muted); }
+.ax b { color: var(--color-fg); font-weight: 600; }
+.file { font-family: var(--font-mono); font-size: 11.5px; color: var(--color-fg-muted); margin-top: 3px; overflow-wrap: anywhere; }
+.toDash { display: inline-block; margin-top: 8px; font-weight: 600; }
+.ext { margin-top: 36px; }
+.ext h2 { font-size: var(--cds-font-size-heading); font-weight: 600; margin: 0 0 4px; }
+.ext p { margin: 0 0 8px; color: var(--color-fg-muted); max-width: 72ch; }
+.ext ul { margin: 0; padding-left: 20px; max-width: 80ch; line-height: 1.55; }
+.ext li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="site-wrap">
+<nav class="site-nav" aria-label="Pages">
+  <a class="site-name" href="index.html">Mexico drug supply data</a>
+  <a class="tab" href="index.html">Seizures by source</a>
+  <a class="tab" href="matrix.html" aria-current="page">What data exists</a>
+</nav>
+<main>
+  <header>
+    <h1 class="pg-title">What data exists</h1>
+    <p class="pg-intro">The data we hold on how Mexico enforces against drug supply, from precursor chemicals to arrests, by agency. The color of each cell shows the most detailed source we hold for it. Click a cell to see every source behind it, the years it covers, how detailed it is and its caveats.</p>
+    <p class="pg-intro"><b>Drugs seized</b> is the row worked through so far: its sources are harmonized and compared in the <a href="index.html">seizures dashboard</a>. The other rows are an inventory of files we hold, not yet harmonized.</p>
+  </header>
+
+  <div class="lgd" aria-label="Legend">
+    <span><span class="k fine"></span>Held, municipal or event level</span>
+    <span><span class="k coarse"></span>Held, state or national</span>
+    <span><span class="k part"></span>Partial: a short window, a proxy, or press only</span>
+    <span><span class="k none"></span>Nothing held</span>
+  </div>
+
+  <div class="mtx-scroll">
+    <div class="mtx" id="mtx" role="group" aria-label="Data by stage of enforcement and agency"></div>
+  </div>
+  <section class="panel" id="panel" aria-live="polite"></section>
+
+  <section class="ext" aria-labelledby="ext-title">
+    <h2 id="ext-title">Ways to extend the seizures row</h2>
+    <p>Sources that exist but we do not hold yet, mostly for the years after 2022.</p>
+    <ul>
+      <li><b>SEDENA's full file behind the GI-TOC tables</b> (transparency folio 330026424002125), to June 2024, probably one row per seizure. GI-TOC published tables built from it; the file itself would come from the transparency platform or from GI-TOC.</li>
+      <li><b>Navy and Guardia Nacional seizures after 2022.</b> The answers we hold stop in 2022 and 2021. Nothing newer is published; it needs new transparency requests.</li>
+      <li><b>Gabinete de Seguridad daily bulletins</b>, from November 2024: one entry per operation, with what was seized and how many people were detained. Free text; it needs a scraper.</li>
+      <li><b>SEDENA and FGR fentanyl by state under López Obrador.</b> Reported in the press (N+, Vanguardia) without a published file; a transparency request should get it.</li>
+      <li><b>Informe de Seguridad deck, April 2023</b>: national fentanyl by month in kilograms, pills and ampoules. A public PDF on gob.mx, not yet downloaded.</li>
+      <li><b>Calderón's Informe annexes with state tables</b>, 2007 to 2012. Listed in the annex index but not found in the archives.</li>
+      <li><b>FGR CENAPI answer</b> (folio 0001700006421), 2000 to 2020 by state, all agencies pooled. We hold it, but it is a scanned PDF that needs text recognition.</li>
+    </ul>
+  </section>
+</main>
+<footer class="site-foot">Working draft, November 2026. López Obrador's term, December 2018 to September 2024, is shaded in the year bars. See also the <a href="index.html">seizures dashboard</a>.</footer>
+</div>
+
+<script>
+// Columns (agencies) and rows (stages of enforcement)
+const C = ['SEDENA (army)', 'SEMAR (navy)', 'Federal Police and Guardia Nacional', 'FGR (federal prosecutors)', 'State level', 'All agencies pooled'];
+const R = ['Precursors', 'Eradication', 'Labs', 'Drugs seized', 'Incineration', 'Airstrips', 'Customs and ports', 'Arrests'];
+const SEIZED_ROW = 3;
+// One source: name, first and last year, finest level, what it measures, our copy, note
+const S = (n, y0, y1, g, d, f, note) => ({ n, y0, y1, g, d, f, note });
+const N = t => ({ s: 'none', l: 'None', src: [], t: t || '' });
+const D = {
+'0,0': { s: 'fine', l: 'Municipal, monthly', src: [S('SEDENA precursor records', 2011, 2024, 'Municipality, month', '67 chemicals, kilograms or litres', 'code/2026/peter/data/precursores_sedena_detalle.csv', "2,233 records. Comes with Alejandro's data; the release behind it is not identified.")] },
+'0,1': N(), '0,2': N(),
+'0,3': { s: 'part', l: '24 rows', src: [S("Alejandro's precursor file, FGR rows", 2017, 2023, 'State, year', 'Fentanyl precursors: ANPP, norfentanyl, 4-anilino piperidines', 'code/2026/peter/data/precursores.csv', '24 rows; source not found.')] },
+'0,4': N(), '0,5': N('Not held: the INCB precursors report (national, by chemical and year).'),
+
+'1,0': { s: 'fine', l: 'Municipal, monthly', src: [
+  S('SEDENA answer to folio 330026423000179', 1990, 2022, 'Municipality, month', 'Hectares of marijuana and poppy, aerial spraying against manual', 'bases/peter_mexico_drugs/raw/mucd_acciones_antidrogas/.../330026423000179_SEDENA (sheets HAS. MARIGUANA, HAS. AMAPOLA)', '47,358 and 24,397 rows.'),
+  S('GI-TOC tables (same register)', 1990, 2024, 'State, year', 'Hectares and plots, spraying against manual', 'bases/peter_mexico_drugs/raw/gitoc_viz/extracted_from_html', '2024 is January to June.'),
+  S('Informe de Gobierno annex, SEDENA table', 2005, 2024, 'National, year', 'Hectares of marijuana and poppy', 'bases/peter_mexico_drugs/raw/informes_gobierno (6th Informe, page 692)', ''),
+  S('SEDENA yearly public sheets', 2014, 2026, 'National, year', 'Plots and hectares, marijuana and poppy', 'bases/peter_mexico_drugs/raw/sedena_operaciones_narcotrafico', '2026 to September.')] },
+'1,1': { s: 'fine', l: 'Municipal, monthly', src: [
+  S('SEMAR answer to folio 330026623000117', 2006, 2022, 'Municipality, month', 'Plots, plants and square metres of poppy and marijuana; method', '.../330026623000117_SEMAR/ANEXO 1.xlsx (sheet PLANTÍOS)', '366 rows.'),
+  S('Informe de Gobierno annex, SEMAR table', 2005, 2024, 'National, year', 'Hectares', 'informes_gobierno (6th Informe, page 692)', 'No navy eradication in 2017, 2018 and 2020 to 2022.')] },
+'1,2': { s: 'fine', l: 'Municipal, monthly', src: [
+  S('Federal Police answer to folio 0413100015520', 2006, 2020, 'Municipality, month', 'Plots of poppy and marijuana; no hectares', '.../0413100015520_PF/0413100015520_PF_anexo.xlsx (sheet Plantíos)', 'December 2006 to January 2020.'),
+  S('Guardia Nacional answer, folio 332259822000079, Anexo I', 2019, 2021, 'Municipality, month', 'Plots of marijuana and poppy', '.../332259822000079_GN/Anexo I', 'July 2019 to December 2021: 26 marijuana and 4 poppy plots.'),
+  S('Guardia Nacional answer, Anexo II', 2020, 2021, 'State, month', 'Plots and hectares', '.../332259822000079_GN/Anexo II', 'Small hand-made tables.')] },
+'1,3': { s: 'coarse', l: 'State, yearly', src: [
+  S('INEGI federal prosecutor census (CNPJF)', 2016, 2024, 'State; municipality from 2022', 'Plots and hectares, marijuana and poppy', 'bases/peter_mexico_drugs/raw/inegi_cnpjf', 'Data year is the census edition minus one.'),
+  S('FGR CENAPI answer, folio 0001700006421', 2000, 2020, 'State, year', 'Hectares; all agencies pooled', '.../0001700006421_FGR/Anexo 6421.pdf', 'Scanned; needs text recognition.')] },
+'1,4': N(),
+'1,5': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, Esfuerzo Nacional', 2005, 2024, 'National, year', 'Hectares of marijuana and poppy', 'informes_gobierno (6th Informe, page 691)', '2024 is January to June.')] },
+
+'2,0': { s: 'fine', l: 'Municipal, by drug', src: [
+  S('SEDENA answer to folio 330026423000179', 1990, 2022, 'Municipality, month', 'Drug produced: 2,681 meth, 23 heroin, 2 cocaine, none fentanyl', '.../330026423000179_SEDENA (sheet LABORATORIOS)', '2,706 labs.'),
+  S('GI-TOC tables (same register)', 1990, 2024, 'Municipality, year', 'Drug produced; 3,752 labs, none fentanyl', 'gitoc_viz/extracted_from_html', '2024 is January to June.'),
+  S('Quinto Elemento lab map', 2018, 2023, 'Municipality, exact day', 'No drug', 'bases/peter_mexico_drugs/raw/quintoelab_labs_flourish', "2,133 labs; joins to SEDENA's register."),
+  S('SEDENA yearly public sheets', 2014, 2026, 'National, year', 'Count only', 'sedena_operaciones_narcotrafico', 'From October 2024 pooled with other production sites.')] },
+'2,1': { s: 'part', l: 'Press only', src: [S('SEMAR press release', 2025, 2025, 'One operation', 'Meth lab in Zacatecas', 'bases/peter_mexico_drugs/raw/semar_zacatecas', 'One release held.')] },
+'2,2': { s: 'fine', l: 'Municipal, monthly', src: [
+  S('Federal Police answer to folio 0413100015520', 2006, 2020, 'Municipality, month', 'No drug', '.../0413100015520_PF (sheet Laboratorios)', '117 rows.'),
+  S('Guardia Nacional answer, Anexo I', 2019, 2021, 'Municipality, month', 'No drug', '.../332259822000079_GN/Anexo I', '2 labs, July 2019 to December 2021.'),
+  S('Guardia Nacional answer, Anexo II', 2020, 2021, 'State, month', 'Drug produced', '.../332259822000079_GN/Anexo II', '6 labs.')] },
+'2,3': { s: 'coarse', l: 'State, yearly', src: [
+  S('INEGI federal prosecutor census (CNPJF)', 2016, 2024, 'State, year', 'No drug', 'inegi_cnpjf', ''),
+  S('FGR CENAPI answer, folio 0001700006421', 2000, 2020, 'State, year', 'No drug; all agencies pooled', 'Anexo 6421.pdf', 'Scanned.')] },
+'2,4': { s: 'part', l: '2025 only', src: [S('INEGI state police census', 2025, 2025, 'State, year', 'State police labs; Guardia Nacional national', 'bases/peter_mexico_drugs/raw/inegi_cnsp', 'Listed in our data catalog; not yet checked in the file.')] },
+'2,5': { s: 'coarse', l: 'National', src: [S('UNODC annual questionnaire, annex 9.1', 2020, 2024, 'National, year', 'By end product', 'bases/peter_mexico_drugs/raw/unodc_wdr2026', "Far below SEDENA's counts.")] },
+
+'3,0': { s: 'fine', l: 'Municipal, monthly', src: [
+  S('SEDENA answer to folio 330026423000179 (main register)', 1990, 2022, 'Municipality, month', 'Marijuana, seeds, cocaine, opium gum, heroin, meth, fentanyl, in kilograms, pills and ampoules', 'bases/peter_mexico_drugs/raw/mucd_acciones_antidrogas/.../330026423000179_SEDENA (sheet DROGA ASEGURADA)', 'The most detailed SEDENA register. The main SEDENA source in the dashboard.'),
+  S("Alejandro's extract of the same register", 2000, 2025, 'Municipality, year', '8 drugs', 'code/2026/peter/data/drogas_sedena_detalle.csv', 'Same register pulled later; runs to early 2025 (2025 partial). Folio unknown.'),
+  S('GI-TOC tables, SEDENA folio 330026424002125', 1990, 2024, 'National, year, with seizure events; municipality by decade', 'By drug and form', 'bases/peter_mexico_drugs/raw/gitoc_viz', 'To June 2024. The only army source that counts seizure events.'),
+  S('InSight Crime, SEDENA fentanyl request (folio 330026422001780)', 2013, 2022, 'Municipality, year', 'Fentanyl only', 'bases/peter_mexico_drugs/raw/insightcrime_fentanyl_2022', 'To June 2022.'),
+  S('SEDENA yearly public sheets', 2014, 2026, 'National, year', 'By drug; no fentanyl line', 'bases/peter_mexico_drugs/raw/sedena_operaciones_narcotrafico', 'To September 2026. Marijuana counts seized plus incinerated, so it runs well above the register.'),
+  S('Informe de Gobierno annex, SEDENA table', 1995, 2024, 'National, year', 'Marijuana and cocaine', 'bases/peter_mexico_drugs/raw/informes_gobierno', '2024 is January to June.')] },
+'3,1': { s: 'fine', l: 'Event, daily', src: [
+  S('SEMAR answer to folio 330026623000117 (main register)', 2006, 2022, 'One row per seizure event, by day and municipality', 'Marijuana, seed, cocaine, meth (kilograms and litres), heroin; no fentanyl column', '.../330026623000117_SEMAR/ANEXO 1.xlsx (sheet DROGA)', '2,098 events, December 2006 to December 2022.'),
+  S('Informe de Gobierno annex, SEMAR table', 1995, 2024, 'National, year', 'Marijuana and cocaine', 'bases/peter_mexico_drugs/raw/informes_gobierno', ''),
+  S('InSight Crime, SEMAR fentanyl', 2019, 2022, 'Event', 'Fentanyl, about 10 events', 'insightcrime_fentanyl_2022/SEMAR-Fentanilo.pdf', 'PDF; not in the dashboard.')] },
+'3,2': { s: 'fine', l: 'Municipal, monthly', src: [
+  S('Federal Police answer to folio 0413100015520', 2006, 2020, 'Municipality, month', 'Cocaine, crystal, heroin, ICE, marijuana, meth, other; no fentanyl column', '.../0413100015520_PF (sheet Droga)', 'Federal Police December 2006 to June 2019, then Guardia Nacional rows to January 2020.'),
+  S('Guardia Nacional answer, folio 332259822000079, Anexo I', 2019, 2021, 'Municipality, month', 'Including fentanyl', '.../332259822000079_GN/Anexo I', 'Specialized units, July 2019 to December 2021.'),
+  S('Guardia Nacional answer, Anexo II', 2020, 2021, 'National, month', 'Including fentanyl', '.../332259822000079_GN/Anexo II', 'State coordinations. Adds to Anexo I; July to December 2019 are blank.'),
+  S('InSight Crime, Guardia Nacional fentanyl', 2020, 2022, 'National, month', 'Fentanyl only', 'bases/peter_mexico_drugs/raw/insightcrime_fentanyl_2022', 'Same series as Anexo II.'),
+  S('INEGI federal police census (CNSPF)', 2019, 2025, 'Municipality, year (to 2023)', 'Many drugs, fentanyl included, in kilograms and pills', 'bases/detenciones_mx/raw/cnspf_2020 to cnspf_2026', 'What the Guardia Nacional seized itself. The only Guardia Nacional source after 2021. Data year is the census edition minus one.')] },
+'3,3': { s: 'coarse', l: 'State, yearly', src: [
+  S('INEGI federal prosecutor census (CNPJF)', 2016, 2024, 'State, year; municipality from 2022', 'Kilograms and pills, fentanyl included', 'bases/peter_mexico_drugs/raw/inegi_cnpjf', 'No table for 2020 and 2021. The wording of what counts changes across editions.'),
+  S('InSight Crime, FGR fentanyl request', 2015, 2022, 'State, year', 'Fentanyl only', 'bases/peter_mexico_drugs/raw/insightcrime_fentanyl_2022', 'To May 2022. 2020 has a likely unit error (Mexico City 66,807 kg).'),
+  S('FGR CENAPI answer, folio 0001700006421', 2000, 2020, 'State, year', 'Cocaine, marijuana, meth, heroin; all agencies pooled', '.../0001700006421_FGR/Anexo 6421.pdf', 'Scanned PDF, needs text recognition; not in the dashboard.')] },
+'3,4': { s: 'fine', l: 'Municipal, yearly', src: [
+  S('INEGI state police census (CNSPE)', 2020, 2025, 'Municipality, year (to 2023)', 'Many drugs, fentanyl included', 'bases/detenciones_mx/raw/cnspe_2021 to cnspe_2026', 'Some states do not answer. Large outliers as printed.'),
+  S('INEGI state prosecutor census (CNPJE)', 2024, 2025, 'State, year; municipality for 2024', 'By drug and unit', 'bases/peter_mexico_drugs/raw/inegi_cnpje', 'Two years only.')] },
+'3,5': { s: 'coarse', l: 'National; state', src: [
+  S('Informe de Gobierno annex, Esfuerzo Nacional', 2000, 2024, 'National, year', 'Marijuana, cocaine, heroin, opium gum, psychotropics', 'bases/peter_mexico_drugs/raw/informes_gobierno', 'All federal agencies pooled. Never add it to agency series.'),
+  S('UNODC annual questionnaire', 2015, 2024, 'National, year', 'By drug', 'bases/peter_mexico_drugs/raw/unodc_wdr2026', "Mexico's answers to the UNODC questionnaire."),
+  S("Alejandro's compiled file", 2000, 2025, 'State, year', 'Five drugs, with SEDENA, FGR and Guardia Nacional columns', 'code/2026/peter/data/base_consolidada_VF.csv', 'A check only: duplicated rows, unknown FGR source after 2020.')] },
+
+'4,0': { s: 'fine', l: 'Municipal, monthly', src: [
+  S('SEDENA answer to folio 330026423000179', 1990, 2022, 'Municipality, month', 'Kilograms incinerated', '.../330026423000179_SEDENA (sheet DROGA INCINERADA)', '18,479 rows.'),
+  S('GI-TOC tables', 1990, 2024, 'National, year', 'By drug', 'gitoc_viz/extracted_from_html', '')] },
+'4,1': N(), '4,2': N(), '4,3': N(), '4,4': N(), '4,5': N(),
+
+'5,0': { s: 'coarse', l: 'National, yearly', src: [
+  S('Informe de Gobierno annex, SEDENA table', 2005, 2024, 'National, year', 'Count', 'informes_gobierno (page 692)', ''),
+  S('SEDENA yearly public sheets', 2014, 2026, 'National, year', 'Count (17 in 2025)', 'sedena_operaciones_narcotrafico', '')] },
+'5,1': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, SEMAR table', 2005, 2024, 'National, year', 'Count', 'informes_gobierno (page 692)', '')] },
+'5,2': N(),
+'5,3': { s: 'coarse', l: 'State, yearly', src: [S('INEGI federal prosecutor census (CNPJF)', 2016, 2024, 'State, year', 'Count', 'inegi_cnpjf', '')] },
+'5,4': N(), '5,5': N(),
+
+'6,0': N(),
+'6,1': { s: 'part', l: 'Port proxy', src: [S('SEMAR seizure events in port municipalities', 2006, 2022, 'Municipality, day', 'Events in Manzanillo, Lázaro Cárdenas and other ports', '.../330026623000117_SEMAR/ANEXO 1.xlsx', 'A proxy, not customs data.')] },
+'6,2': N(), '6,3': N(), '6,4': N(),
+'6,5': N('No customs agency (ANAM) series exists. Not held: INCB precursor seizures, legal chemical imports (trade data). COFEPRIS import permits need a transparency request.'),
+
+'7,0': { s: 'coarse', l: 'National, yearly', src: [
+  S('Informe de Gobierno annex, SEDENA table', 2005, 2024, 'National, year', 'Drug crimes and firearms law', 'informes_gobierno (page 692)', ''),
+  S('SEDENA yearly public sheets', 2014, 2026, 'National, year', 'All crimes', 'sedena_operaciones_narcotrafico', '')] },
+'7,1': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, SEMAR table', 2005, 2024, 'National, year', 'Drug and related crimes', 'informes_gobierno (page 692)', '')] },
+'7,2': { s: 'coarse', l: 'National', src: [S('INEGI federal police census, people handed over', 2019, 2025, 'Guardia Nacional national total', 'By crime type', 'bases/detenciones_mx', 'Counts crimes, not people.')] },
+'7,3': { s: 'coarse', l: 'State; windows', src: [
+  S('INEGI federal prosecutor census, drug detainees', 2016, 2024, 'State, year', 'Drug crimes; no substance, no arresting agency', 'inegi_cnpjf', ''),
+  S('PGR detainees by arresting agency (window)', 2015, 2016, 'State, month', 'All federal crimes, drug subtypes; names the agency', 'bases/peter_mexico_drugs/raw/pgr_detenidos_datamx', 'October 2015 to October 2016.'),
+  S('FGR case files opened with a detainee (window)', 2017, 2019, 'FGR office, month', 'By crime', 'bases/peter_mexico_drugs/raw/fgr_opendata_archived', 'December 2017 missing.'),
+  S('FGR seizure events with detainees (window)', 2019, 2019, 'Event', '66 events, 54 detainees', 'fgr_opendata_archived/NARCOTICOSEIDF.csv', 'January to August 2019.')] },
+'7,4': { s: 'coarse', l: 'State, yearly', src: [
+  S('INEGI state police census, people handed over', 2017, 2025, 'State, year', 'By crime: simple possession, possession for sale, trade, supply', 'bases/detenciones_mx', 'Counts crimes, not people; break in 2020.'),
+  S('INEGI state prosecutor census, small-scale dealing (narcomenudeo)', 2017, 2024, 'State, year', 'People and crimes by drug and quantity range', 'code/2026/peter/data/inegi', '')] },
+'7,5': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, Esfuerzo Nacional', 2005, 2024, 'National, year', 'Drug and related federal crimes', 'informes_gobierno (page 691)', 'All federal agencies pooled.')] }
+};
+
+const Y0 = 1990, Y1 = 2026;
+const pct = y => ((y - Y0) / (Y1 - Y0 + 1)) * 100;
+const AMLO = { from: 2018.92, to: 2024.75 };
+const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; };
+
+// The grid
+const mtx = document.getElementById('mtx'), panel = document.getElementById('panel');
+mtx.append(el('div'));
+C.forEach(c => mtx.append(el('div', 'h', c)));
+R.forEach((r, i) => {
+  mtx.append(el('div', 'r', r));
+  C.forEach((c, j) => {
+    const d = D[i + ',' + j];
+    const b = el('button', 'cell ' + d.s, d.l);
+    b.type = 'button';
+    b.dataset.k = i + ',' + j;
+    b.setAttribute('aria-pressed', 'false');
+    b.setAttribute('aria-label', r + ', ' + c + ': ' + d.l);
+    mtx.append(b);
+  });
+});
+
+// The detail panel for one cell
+function show(k, scroll) {
+  mtx.querySelectorAll('.cell').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.k === k)));
+  const [i, j] = k.split(',').map(Number), d = D[k];
+  const out = [el('h2', null, R[i] + ' · ' + C[j])];
+  if (!d.src.length) out.push(el('p', 'lead', d.t || 'Nothing held for this cell.'));
+  else out.push(el('p', 'lead', d.src.length === 1 ? 'One source.' : d.src.length + ' sources, the most detailed first.'));
+  d.src.forEach(s => {
+    const box = el('div', 'src');
+    box.append(el('div', 'n', s.n), el('div', null, s.g + ' · ' + s.d));
+    const bar = el('div', 'bar');
+    const am = el('span', 'amlo'); am.style.left = pct(AMLO.from) + '%'; am.style.width = (pct(AMLO.to) - pct(AMLO.from)) + '%';
+    const cv = el('span', 'cov'); cv.style.left = pct(s.y0) + '%'; cv.style.width = Math.max(pct(s.y1 + 1) - pct(s.y0), 1.2) + '%';
+    bar.append(am, cv);
+    bar.setAttribute('role', 'img'); bar.setAttribute('aria-label', 'Covers ' + (s.y0 === s.y1 ? s.y0 : s.y0 + ' to ' + s.y1));
+    const ax = el('div', 'ax'); ax.append(el('span', null, String(Y0)), el('b', null, s.y0 === s.y1 ? String(s.y0) : s.y0 + ' to ' + s.y1), el('span', null, String(Y1)));
+    box.append(bar, ax);
+    if (s.note) box.append(el('div', null, s.note));
+    box.append(el('div', 'file', 'Where we hold it: ' + s.f));
+    out.push(box);
+  });
+  if (i === SEIZED_ROW && d.src.length) {
+    const a = el('a', 'toDash', 'Compare these sources year by year in the seizures dashboard');
+    a.href = 'index.html';
+    out.push(a);
+  }
+  panel.replaceChildren(...out);
+  if (scroll) panel.scrollIntoView({ block: 'nearest', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+}
+mtx.addEventListener('click', e => { const c = e.target.closest('.cell'); if (c) show(c.dataset.k, true); });
+show(SEIZED_ROW + ',0', false);
+</script>
+</body>
+</html>

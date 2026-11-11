@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mexico drug seizures</title>
+<meta name="description" content="How much of each drug Mexican agencies say they seized each year, from every government source we hold, compared side by side.">
+<link rel="stylesheet" href="site.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+// A small stand-in for the dashboard runtime: loads the two CSVs, keeps the
+// drawing functions, and redraws them when the data arrive or the width changes.
+window.dash = (function () {
+  const store = {}, specs = new Map();
+  function runOne(name) {
+    const spec = specs.get(name);
+    if (!spec) return;
+    document.querySelectorAll('[data-draw="' + name + '"]').forEach(el => {
+      try {
+        if (typeof spec === 'function') spec(el);
+        else {
+          if (!el.__made) el.__made = spec.mount ? spec.mount(el) : {};
+          if (spec.update) spec.update(el, el.__made);
+        }
+      } catch (err) { console.error('draw ' + name, err); }
+    });
+  }
+  const api = {
+    colors: ['var(--s1)', 'var(--s2)', 'var(--s3)', 'var(--s4)', 'var(--s5)', 'var(--s6)', 'var(--s7)', 'var(--s8)', 'var(--s9)', 'var(--s10)'],
+    data: id => store[id] || { status: 'loading', data: [] },
+    draw(name, spec) { if (spec) specs.set(name, spec); runOne(name); },
+    all() { specs.forEach((_, n) => runOne(n)); }
+  };
+  document.addEventListener('DOMContentLoaded', () => {
+    const load = (id, url) => d3.csv(url).then(
+      rows => { store[id] = { status: 'ok', data: rows }; },
+      err => { store[id] = { status: 'error', data: [] }; console.error(url, err); });
+    Promise.all([load('seizures', 'data/dash_seizures.csv'), load('sources', 'data/dash_sources.csv')]).then(api.all);
+    const chart = document.getElementById('chart');
+    let lastW = chart ? chart.clientWidth : 0, timer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { const w = chart.clientWidth; if (w !== lastW) { lastW = w; runOne('chart'); } }, 150);
+    });
+  });
+  return api;
+})();
+</script>
+</head>
+<body>
+<div class="site-wrap">
+<nav class="site-nav" aria-label="Pages">
+  <a class="site-name" href="index.html">Mexico drug supply data</a>
+  <a class="tab" href="index.html" aria-current="page">Seizures by source</a>
+  <a class="tab" href="matrix.html">What data exists</a>
+</nav>
+<main>
+<style>
+.mx { display: flex; flex-direction: column; gap: var(--cds-gap-xl); font-family: var(--font-sans); color: var(--color-fg); }
+.mx [hidden] { display: none !important; }
+.mx-title { font-family: var(--font-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+.mx-intro { margin: var(--cds-gap-sm) 0 0; max-width: 70ch; line-height: 1.55; color: var(--color-fg-muted); }
+.mx-lede { margin: var(--cds-gap-sm) 0 0; max-width: 70ch; line-height: 1.55; font-size: var(--cds-font-size-body); }
+.mx-lede b { font-weight: var(--cds-font-weight-medium); font-variant-numeric: tabular-nums; }
+.mx-panel { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-md); }
+.mx-views { display: inline-flex; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; align-self: flex-start; max-width: 100%; flex-wrap: wrap; }
+.mx-views button { font: inherit; font-size: var(--cds-font-size-caption); padding: 7px 14px; background: var(--color-bg); color: var(--color-fg); border: 0; cursor: pointer; }
+.mx-views button + button { border-left: 1px solid var(--color-border-line); }
+.mx-views button[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
+.mx-views button:focus-visible, .mx-chip:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+.mx-viewhelp { margin: 0; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); max-width: 70ch; }
+.mx-controls { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); align-items: flex-end; }
+.mx-field { display: flex; flex-direction: column; gap: var(--cds-gap-xs); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); min-width: 0; }
+.mx-field select { min-width: 9rem; max-width: 100%; }
+.mx-h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0 0 var(--cds-gap-sm); }
+.mx-legend { display: flex; flex-wrap: wrap; gap: 6px; }
+.mx-chip { font: inherit; font-size: var(--cds-font-size-caption); display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px 4px 8px; border-radius: 999px; border: 1px solid var(--color-border-line); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
+.mx-chip[aria-pressed="false"] { opacity: .45; text-decoration: line-through; }
+.mx-swatch { display: inline-block; width: 18px; height: 0; border-top-width: 3px; border-top-style: solid; }
+.mx-chart { position: relative; min-height: 340px; }
+.mx-chart svg { display: block; overflow: visible; }
+.mx-chart .tick text, .mx-chart .mx-axlabel { fill: var(--cds-text-secondary); font-size: var(--cds-font-size-caption); font-family: var(--font-sans); }
+.mx-chart .domain, .mx-chart .tick line { stroke: var(--cds-chart-axis); }
+.mx-chart .mx-grid line { stroke: var(--cds-chart-grid); }
+.mx-band { fill: var(--cds-chart-muted); opacity: .16; }
+.mx-bandlabel { fill: var(--cds-text-secondary); font-size: var(--cds-font-size-caption); }
+.mx-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: var(--cds-pad-sm) var(--cds-pad-md); font-size: var(--cds-font-size-caption); min-width: 13rem; max-width: 22rem; z-index: 2; }
+.mx-tip .mx-tiprow { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 8px; align-items: center; font-variant-numeric: tabular-nums; padding: 1px 0; }
+.mx-tip .mx-dot { width: 8px; height: 8px; border-radius: 50%; }
+.mx-tip .mx-tipname { color: var(--cds-text-secondary); }
+.mx-empty { color: var(--color-fg-muted); padding: var(--cds-pad-lg) 0; margin: 0; }
+.mx-caption { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin: var(--cds-gap-sm) 0 0; max-width: 70ch; line-height: 1.5; }
+.mx-flagnote { color: var(--color-warn); font-size: var(--cds-font-size-caption); margin: var(--cds-gap-xs) 0 0; max-width: 70ch; }
+.mx-tablehead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: var(--cds-gap-md); }
+.mx-tablewrap { overflow-x: auto; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); }
+.mx-table { border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.mx-table th, .mx-table td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+.mx-table thead th { color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); }
+.mx-table thead th.mx-amloyr { background: color-mix(in srgb, var(--cds-chart-muted) 18%, transparent); color: var(--color-fg); }
+.mx-table th.mx-rowname, .mx-table td.mx-rowname { text-align: left; position: sticky; left: 0; background: var(--color-bg); min-width: 13rem; max-width: 17rem; white-space: normal; z-index: 1; }
+.mx-rowinner { display: flex; gap: 8px; align-items: center; }
+.mx-table tbody tr:hover td { background: var(--color-panel); }
+.mx-table td.mx-partial { color: var(--color-fg-muted); font-style: italic; }
+.mx-table td.mx-flagged { color: var(--color-warn); }
+.mx-table td.mx-none { color: var(--color-fg-muted); opacity: .5; }
+.mx-cov { display: flex; flex-direction: column; gap: var(--cds-gap-lg); }
+.mx-covgroup h3 { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: 0 0 var(--cds-gap-xs); }
+.mx-covitem { border-top: 1px solid var(--color-border-line); }
+.mx-covitem summary { display: grid; grid-template-columns: 1.1rem minmax(0, 16rem) minmax(0, 1fr); gap: var(--cds-gap-sm); align-items: center; padding: 8px 0; cursor: pointer; list-style: none; }
+.mx-covitem summary::-webkit-details-marker { display: none; }
+.mx-caret { color: var(--color-fg-muted); font-size: 11px; transition: transform .15s; }
+.mx-covitem[open] .mx-caret { transform: rotate(90deg); }
+.mx-covname { font-size: var(--cds-font-size-caption); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-width: 0; }
+.mx-pill { font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--color-border-line); color: var(--color-fg-muted); white-space: nowrap; }
+.mx-pill.mx-main { border-color: var(--color-ok); color: var(--color-ok); }
+.mx-pill.mx-contrast { border-color: var(--color-warn); color: var(--color-warn); }
+.mx-covbar { position: relative; height: 10px; background: var(--color-panel); border-radius: 5px; overflow: hidden; }
+.mx-covbar .mx-covamlo { position: absolute; top: 0; bottom: 0; background: var(--cds-chart-muted); opacity: .25; }
+.mx-covbar .mx-covspan { position: absolute; top: 2px; bottom: 2px; border-radius: 3px; background: var(--color-fg-muted); }
+.mx-covdetail { font-size: var(--cds-font-size-caption); padding: 0 0 var(--cds-pad-md) 1.6rem; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px var(--cds-gap-md); margin: 0; }
+.mx-covdetail dt { color: var(--color-fg-muted); }
+.mx-covdetail dd { margin: 0; color: var(--color-fg); overflow-wrap: anywhere; }
+.mx-axisyears { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-fg-muted); margin-left: calc(17.1rem + 2 * var(--cds-gap-sm)); }
+.mx-notes { border-top: 1px solid var(--color-border-line); padding-top: var(--cds-pad-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); max-width: 72ch; }
+.mx-notes summary { cursor: pointer; color: var(--color-fg); }
+.mx-notes p { margin: var(--cds-gap-sm) 0 0; line-height: 1.55; }
+@media (prefers-reduced-motion: reduce) { .mx-caret { transition: none; } }
+@media (max-width: 600px) {
+  .mx-covitem summary { grid-template-columns: 1.1rem minmax(0, 1fr); }
+  .mx-covitem summary .mx-covbar { grid-column: 2; }
+  .mx-axisyears { display: none; }
+  .mx-table th.mx-rowname, .mx-table td.mx-rowname { min-width: 9rem; }
+}
+</style>
+
+<div class="mx">
+  <header id="top">
+    <h1 class="mx-title">Mexico drug seizures by source</h1>
+    <p class="mx-intro">How much of each drug Mexican agencies say they seized each year, from every government source we hold. Compare agencies, or compare the different versions of one agency's own records, which do not always agree.</p>
+    <p class="mx-lede" id="takeaway"><span data-draw="t-what">—</span>.
+      <span id="lede-range">In <b data-draw="t-year">—</b>, the highest figure shown is <b data-draw="t-max">—</b> (<span data-draw="t-maxname">—</span>) and the lowest <b data-draw="t-min">—</b> (<span data-draw="t-minname">—</span>).</span>
+      <span id="lede-same" hidden>In <b data-draw="t-year2">—</b>, every line shown reports <b data-draw="t-same">—</b>.</span>
+      <span data-draw="lede-toggle" hidden></span>
+    </p>
+  </header>
+
+  <section id="controls" class="mx-panel" aria-label="What to show">
+    <div class="mx-views" role="group" aria-label="View">
+      <button type="button" id="view-agency" data-view="agency" aria-pressed="true">One line per agency</button>
+      <button type="button" id="view-versions" data-view="versions" aria-pressed="false">Versions of one agency's records</button>
+    </div>
+    <p class="mx-viewhelp" id="help-agency">Each line is an agency's main source: the longest yearly series of its own records.</p>
+    <p class="mx-viewhelp" id="help-versions" hidden>Each line is one version of the same agency's records: an answer to a transparency request, a later pull of the same system, a yearly public sheet, or a table in the president's yearly report. The solid line is the main source.</p>
+    <div class="mx-controls">
+      <label class="mx-field" id="field-register" hidden>Agency
+        <select class="dash-select" id="f-register" data-draw="register-select" data-source="sources" aria-label="Agency"></select>
+      </label>
+      <label class="mx-field">Drug
+        <select class="dash-select" id="f-drug" data-draw="drug-select" data-source="seizures" aria-label="Drug"></select>
+      </label>
+      <label class="mx-field">Unit
+        <select class="dash-select" id="f-unit" data-draw="unit-select" data-source="seizures" aria-label="Unit"></select>
+      </label>
+      <label class="mx-field">Place
+        <select class="dash-select" id="f-place" data-draw="place-select" data-source="seizures" aria-label="Place"></select>
+      </label>
+      <label class="mx-field">Scale
+        <select class="dash-select" id="f-scale" aria-label="Scale">
+          <option value="linear">Linear</option>
+          <option value="log">Logarithmic</option>
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <section id="chart-sec" aria-labelledby="chart-title">
+    <h2 class="mx-h2" id="chart-title">Amount seized each year</h2>
+    <div class="mx-legend" id="legend" data-draw="legend" data-source="sources" aria-label="Lines shown; click to hide or show"></div>
+    <div class="mx-chart" id="chart" data-draw="chart" data-source="seizures sources"></div>
+    <p class="mx-caption">Shaded: López Obrador's term, December 2018 to September 2024. Hollow points: a year the source covers only in part. Click a name above to hide or show its line; point at the chart to read the values.</p>
+    <p class="mx-flagnote" id="flag-note" hidden>Left out of the chart: the FGR fentanyl file reports 66,807 kg in Mexico City and 6,080 kg in Baja California for 2020, about 60 times the country's yearly fentanyl seizures in every other source, so it is most likely a unit error at the source. The table still shows it, marked.</p>
+    <span data-draw="flag-toggle" hidden></span>
+  </section>
+
+  <section id="table-sec" aria-labelledby="table-title">
+    <div class="mx-tablehead">
+      <h2 class="mx-h2" id="table-title">The same numbers, year by year</h2>
+      <label class="mx-field">Years
+        <select class="dash-select" id="f-years" aria-label="Years in the table">
+          <option value="2012">From 2012 (Peña Nieto on)</option>
+          <option value="2000">From 2000</option>
+          <option value="1990">All years</option>
+        </select>
+      </label>
+    </div>
+    <div class="mx-tablewrap">
+      <table class="mx-table" id="values-table" data-draw="table" data-source="seizures"></table>
+    </div>
+    <p class="mx-caption">One row per line in the chart. Shaded years: López Obrador's term. Italics: a year the source covers only in part. A dot: nothing reported. Values are in the unit chosen above.</p>
+  </section>
+
+  <section id="coverage-sec" aria-labelledby="coverage-title">
+    <h2 class="mx-h2" id="coverage-title">What each source covers</h2>
+    <p class="mx-caption">Bars run from 1990 to 2026, with López Obrador's term shaded. Click a source to see how detailed it is, which drugs it has, and its caveats.</p>
+    <div class="mx-axisyears" aria-hidden="true"><span>1990</span><span>2000</span><span>2010</span><span>2020</span><span>2026</span></div>
+    <div class="mx-cov" id="coverage" data-draw="coverage" data-source="sources"></div>
+  </section>
+
+  <details class="mx-notes" id="notes">
+    <summary>How to read the sources</summary>
+    <p>Each agency keeps its own register of seizures: the army (SEDENA), the navy (SEMAR), the Federal Police and then the Guardia Nacional, the federal prosecutors (FGR), and state police and prosecutors. The same register reaches us in several versions: an answer to a transparency request, a later pull of the same system, a yearly public sheet, or a table in the annex of the president's yearly report. The versions can differ because the system is revised over time.</p>
+    <p>Main source: the version drawn in the one-line-per-agency view, the longest yearly series of that agency's own records. Comparison only: pooled totals of all federal agencies, or compiled files that mix several registers. These are never added to agency lines, since that would count the same seizure twice.</p>
+    <p>Kilograms, pills and ampoules are separate series and are never added. Tons, grams and milligrams were converted to kilograms. Cannabis plants are kept apart from marijuana.</p>
+    <p>Download the data: <a href="data/dash_seizures.csv">dash_seizures.csv</a> (one row per source, agency, place, year, drug and unit) and <a href="data/dash_sources.csv">dash_sources.csv</a> (one row per source, with its years, detail and notes).</p>
+    <p>Known gaps: the navy and Guardia Nacional answers stop in 2022 and 2021; after that the Guardia Nacional appears only in INEGI's police census. The INEGI prosecutor census has no table for 2020 and 2021. SEDENA's yearly public sheets count marijuana seized plus incinerated, so they run well above the register. The Informe annex and GI-TOC tables cover January to June of 2024 only.</p>
+  </details>
+</div>
+
+<script>
+// Fixed labels and references known when the page was written (not data)
+window.MX_LABELS = {
+  drug: { marijuana: 'Marijuana', marijuana_seed: 'Marijuana seed', marijuana_plant: 'Marijuana plants', hashish: 'Hashish', poppy_seed: 'Poppy seed', poppy_plant: 'Poppy plants', opium_gum: 'Opium gum', heroin: 'Heroin', morphine: 'Morphine', cocaine: 'Cocaine', meth: 'Methamphetamine', fentanyl: 'Fentanyl', mda: 'MDA', mdma: 'MDMA', lsd: 'LSD', psychotropics: 'Psychotropics', other: 'Other' },
+  unit: { kg: 'kilograms', pills: 'pills', ampoules: 'ampoules', litres: 'litres' },
+  unitShort: { kg: 'kg', pills: 'pills', ampoules: 'ampoules', litres: 'litres' },
+  register: { army: 'SEDENA (army)', navy: 'SEMAR (navy)', federal_police_gn: 'Federal Police and Guardia Nacional', fgr: 'FGR (federal prosecutors)', state_police: 'State police', state_prosecutors: 'State prosecutors', totals: 'Totals and compiled files' },
+  registerOrder: ['army', 'navy', 'federal_police_gn', 'fgr', 'state_police', 'state_prosecutors', 'totals'],
+  agencyOrder: ['SEDENA', 'SEMAR', 'Federal Police', 'Guardia Nacional', 'FGR', 'State police', 'State prosecutors', 'All federal agencies', 'All agencies', "Alejandro's compiled file"],
+  // columns of Alejandro's compiled file, by the agency they belong to
+  compiledAgency: { SEDENA: ['army', 'SEDENA'], GN: ['federal_police_gn', 'Guardia Nacional'], FGR: ['fgr', 'FGR'] },
+  place: { '00': 'National', '01': 'Aguascalientes', '02': 'Baja California', '03': 'Baja California Sur', '04': 'Campeche', '05': 'Coahuila', '06': 'Colima', '07': 'Chiapas', '08': 'Chihuahua', '09': 'Mexico City', '10': 'Durango', '11': 'Guanajuato', '12': 'Guerrero', '13': 'Hidalgo', '14': 'Jalisco', '15': 'State of Mexico', '16': 'Michoacán', '17': 'Morelos', '18': 'Nayarit', '19': 'Nuevo León', '20': 'Oaxaca', '21': 'Puebla', '22': 'Querétaro', '23': 'Quintana Roo', '24': 'San Luis Potosí', '25': 'Sinaloa', '26': 'Sonora', '27': 'Tabasco', '28': 'Tamaulipas', '29': 'Tlaxcala', '30': 'Veracruz', '31': 'Yucatán', '32': 'Zacatecas', '99': 'State not identified' }
+};
+// López Obrador's term: December 2018 to September 2024
+window.MX_AMLO = { from: 2018.92, to: 2024.75, firstYear: 2019, lastYear: 2024 };
+// What the reader picked; changed only by the controls
+window.MX_STATE = window.MX_STATE || { view: 'agency', register: 'army', drug: 'fentanyl', unit: 'kg', place: '00', scale: 'linear', fromYear: 2012, off: {} };
+</script>
+
+<script>
+// Parsing and the lines of the current selection, shared by every drawing
+window.MX = (function () {
+  let cacheRows = null, parsed = null, cacheSrc = null, srcMap = null;
+  function rows() {
+    const d = dash.data('seizures');
+    if (d.status !== 'ok') return null;
+    if (d.data !== cacheRows) {
+      cacheRows = d.data;
+      parsed = d.data.map(r => ({ source_id: r.source_id, agency: r.agency, place: String(r.place).padStart(2, '0'), year: +r.year, drug: r.drug, unit: r.unit, amount: +r.amount, partial: String(r.partial) === '1', flag: r.flag || '' }));
+    }
+    return parsed;
+  }
+  function sources() {
+    const d = dash.data('sources');
+    if (d.status !== 'ok') return null;
+    if (d.data !== cacheSrc) { cacheSrc = d.data; srcMap = new Map(d.data.map(s => [s.source_id, s])); }
+    return srcMap;
+  }
+  function status() {
+    const a = dash.data('seizures').status, b = dash.data('sources').status;
+    if (a === 'ok' && b === 'ok') return 'ok';
+    if (a === 'error' || b === 'error') return 'error';
+    return 'loading';
+  }
+  // Which register (and which agency name) a row belongs to
+  function placeOf(r, S) {
+    const s = S.get(r.source_id) || {};
+    const L = window.MX_LABELS;
+    if (r.source_id === 'alejandro_consolidated') {
+      const m = L.compiledAgency[r.agency] || ['totals', r.agency];
+      return { register: m[0], agency: m[1], name: "Alejandro's compiled file · " + m[1] + ' column', main: false, role: 'contrast' };
+    }
+    const reg = (s.register === 'pooled' || s.register === 'compiled') ? 'totals' : s.register;
+    let name = s.short || s.label || r.source_id;
+    const pfGN = r.source_id === 'pf_folio' && r.agency === 'GN';
+    if (pfGN) name = 'Federal Police · main register (its Guardia Nacional rows)';
+    return { register: reg, agency: s.agency_label || r.agency, name, main: String(s.main) === '1' && !pfGN, role: s.role || 'contrast' };
+  }
+  // Lines for the current view, drug, unit and place
+  function lines() {
+    const R = rows(), S = sources();
+    if (!R || !S) return null;
+    const st = window.MX_STATE, L = window.MX_LABELS;
+    const pick = R.filter(r => r.drug === st.drug && r.unit === st.unit && r.place === st.place);
+    const out = new Map();
+    pick.forEach(r => {
+      const p = placeOf(r, S);
+      if (st.view === 'agency' ? !p.main : p.register !== st.register) return;
+      const key = r.source_id + '|' + r.agency;
+      if (!out.has(key)) out.set(key, { key, source_id: r.source_id, agency: r.agency, name: st.view === 'agency' ? p.agency : p.name, fullName: p.name, agencyName: p.agency, main: p.main, role: p.role, points: [] });
+      out.get(key).points.push(r);
+    });
+    const list = [...out.values()];
+    list.forEach(l => l.points.sort((a, b) => a.year - b.year));
+    const ord = L.agencyOrder;
+    const rank = l => l.main ? 0 : l.role === 'contrast' ? 2 : 1;
+    list.sort((a, b) => (rank(a) - rank(b)) || (ord.indexOf(a.agencyName) - ord.indexOf(b.agencyName)) || a.name.localeCompare(b.name));
+    // Colors: by agency in the agency view, by position in the versions view
+    list.forEach((l, i) => {
+      const idx = st.view === 'agency' ? Math.max(0, ord.indexOf(l.agencyName)) : i;
+      l.color = dash.colors[idx % dash.colors.length];
+      l.dash = st.view === 'agency' || l.main ? null : (l.role === 'contrast' ? '2 4' : '6 4');
+    });
+    return list;
+  }
+  function shown() { const l = lines(); return l ? l.filter(x => !window.MX_STATE.off[x.key]) : null; }
+  function where(p) {
+    const e = encodeURIComponent;
+    return 'source_id=' + e(p.source_id) + '&agency=' + e(p.agency) + '&place=' + e(p.place) + '&year=' + p.year + '&drug=' + e(p.drug) + '&unit=' + e(p.unit);
+  }
+  const fmt = v => v === null || v === undefined || !isFinite(v) ? '' : (Math.abs(v) >= 100 ? d3.format(',.0f')(v) : Math.abs(v) >= 1 ? d3.format(',.1f')(v) : d3.format(',.2~f')(v));
+  return { rows, sources, status, lines, shown, where, fmt };
+})();
+
+window.mxRedraw = function () {
+  ['register-select', 'unit-select', 'place-select', 'legend', 'chart', 'table', 'flag-toggle', 't-what', 't-year', 't-max', 't-min', 't-maxname', 't-minname', 't-year2', 't-same', 'lede-toggle'].forEach(n => dash.draw(n));
+};
+
+// The view buttons, scale and years have fixed choices written in the HTML; scripts only listen
+document.querySelectorAll('[data-view]').forEach(btn => {
+  btn.setAttribute('aria-pressed', String(btn.getAttribute('data-view') === window.MX_STATE.view));
+  btn.addEventListener('click', () => {
+    const v = btn.getAttribute('data-view');
+    window.MX_STATE.view = v;
+    window.MX_STATE.off = {};
+    document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    document.querySelectorAll('#field-register').forEach(el => { el.hidden = v !== 'versions'; });
+    document.querySelectorAll('#help-agency').forEach(el => { el.hidden = v !== 'agency'; });
+    document.querySelectorAll('#help-versions').forEach(el => { el.hidden = v !== 'versions'; });
+    window.mxRedraw();
+  });
+});
+document.querySelectorAll('#f-scale').forEach(el => {
+  el.value = window.MX_STATE.scale;
+  el.addEventListener('change', () => { window.MX_STATE.scale = el.value; dash.draw('chart'); });
+});
+document.querySelectorAll('#f-years').forEach(el => {
+  el.value = String(window.MX_STATE.fromYear);
+  el.addEventListener('change', () => { window.MX_STATE.fromYear = +el.value; dash.draw('table'); });
+});
+</script>
+
+<script>
+// Controls whose choices come from the data
+dash.draw('register-select', sel => {
+  const S = window.MX.sources(), st = window.MX_STATE, L = window.MX_LABELS;
+  if (!S) { sel.replaceChildren(new Option('Loading', '')); return; }
+  sel.replaceChildren(...L.registerOrder.map(g => new Option(L.register[g], g)));
+  sel.value = st.register;
+  sel.onchange = () => { st.register = sel.value; st.off = {}; window.mxRedraw(); };
+});
+dash.draw('drug-select', sel => {
+  const R = window.MX.rows(), st = window.MX_STATE, L = window.MX_LABELS;
+  if (!R) { sel.replaceChildren(new Option('Loading', '')); return; }
+  const top = ['fentanyl', 'meth', 'cocaine', 'heroin', 'marijuana', 'opium_gum'];
+  const all = [...new Set(R.map(r => r.drug))];
+  const rest = all.filter(d => !top.includes(d)).sort((a, b) => (L.drug[a] || a).localeCompare(L.drug[b] || b));
+  sel.replaceChildren(...top.filter(d => all.includes(d)).concat(rest).map(d => new Option(L.drug[d] || d, d)));
+  if (!all.includes(st.drug)) st.drug = all[0];
+  sel.value = st.drug;
+  sel.onchange = () => { st.drug = sel.value; window.mxRedraw(); };
+});
+dash.draw('unit-select', sel => {
+  const R = window.MX.rows(), st = window.MX_STATE, L = window.MX_LABELS;
+  if (!R) { sel.replaceChildren(new Option('Loading', '')); return; }
+  const units = [...new Set(R.filter(r => r.drug === st.drug).map(r => r.unit))].sort();
+  if (!units.includes(st.unit)) st.unit = units.includes('kg') ? 'kg' : units[0];
+  sel.replaceChildren(...units.map(u => new Option(L.unit[u] || u, u)));
+  sel.value = st.unit;
+  sel.onchange = () => { st.unit = sel.value; window.mxRedraw(); };
+});
+dash.draw('place-select', sel => {
+  const R = window.MX.rows(), st = window.MX_STATE, L = window.MX_LABELS;
+  if (!R) { sel.replaceChildren(new Option('Loading', '')); return; }
+  const places = [...new Set(R.filter(r => r.drug === st.drug && r.unit === st.unit).map(r => r.place))].filter(p => p !== '00').sort((a, b) => (L.place[a] || a).localeCompare(L.place[b] || b));
+  places.unshift('00');
+  if (!places.includes(st.place)) st.place = '00';
+  sel.replaceChildren(...places.map(p => new Option(L.place[p] || p, p)));
+  sel.value = st.place;
+  sel.onchange = () => { st.place = sel.value; window.mxRedraw(); };
+});
+
+// Legend chips: click to hide or show a line
+dash.draw('legend', box => {
+  const ls = window.MX.lines(), st = window.MX_STATE;
+  if (!ls) { box.textContent = '—'; return; }
+  if (!ls.length) { box.replaceChildren(); return; }
+  box.replaceChildren(...ls.map(l => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'mx-chip';
+    b.setAttribute('aria-pressed', String(!st.off[l.key]));
+    b.title = l.fullName;
+    const sw = document.createElement('span'); sw.className = 'mx-swatch';
+    sw.style.borderTopColor = l.color; sw.style.borderTopStyle = l.dash ? (l.role === 'contrast' ? 'dotted' : 'dashed') : 'solid';
+    const tx = document.createElement('span'); tx.textContent = l.name;
+    b.append(sw, tx);
+    b.onclick = () => { st.off[l.key] = !st.off[l.key]; ['legend', 'chart', 'table', 'flag-toggle', 't-year', 't-max', 't-min', 't-maxname', 't-minname', 't-year2', 't-same', 'lede-toggle'].forEach(n => dash.draw(n)); };
+    return b;
+  }));
+});
+
+// Shows the flag note only when a flagged value is in the current selection
+dash.draw('flag-toggle', el => {
+  const ls = window.MX.shown();
+  const has = !!ls && ls.some(l => l.points.some(p => p.flag));
+  document.querySelectorAll('#flag-note').forEach(n => { n.hidden = !has; });
+});
+</script>
+
+<script>
+// The sentence under the title: highest and lowest line in the latest
+// year that at least two shown lines cover in full
+window.mxRange = function () {
+  const ls = window.MX.shown();
+  if (!ls) return null;
+  const pts = ls.flatMap(l => l.points.filter(p => !p.partial && !p.flag).map(p => ({ p, l })));
+  const byYear = d3.group(pts, d => d.p.year);
+  const years = [...byYear.keys()].filter(y => byYear.get(y).length >= 2).sort((a, b) => a - b);
+  if (!years.length) return { year: null };
+  const y = years[years.length - 1], list = byYear.get(y);
+  return { year: y, max: d3.greatest(list, d => d.p.amount), min: d3.least(list, d => d.p.amount) };
+};
+window.mxMark = function (el, d) {
+  if (!d) { el.textContent = '—'; el.removeAttribute('data-where'); el.removeAttribute('data-source'); return; }
+  el.textContent = window.MX.fmt(d.p.amount) + ' ' + window.MX_LABELS.unitShort[d.p.unit];
+  el.setAttribute('data-source', 'seizures'); el.setAttribute('data-field', 'amount'); el.setAttribute('data-where', window.MX.where(d.p));
+};
+dash.draw('t-what', el => {
+  const st = window.MX_STATE, L = window.MX_LABELS;
+  if (!window.MX.rows()) { el.textContent = '—'; return; }
+  const scope = st.view === 'agency' ? 'by agency' : 'in the versions of ' + L.register[st.register] + ' records';
+  el.textContent = (L.drug[st.drug] || st.drug) + ' seized, in ' + (L.unit[st.unit] || st.unit) + ', ' + (st.place === '00' ? 'nationally' : 'in ' + (L.place[st.place] || st.place)) + ', ' + scope;
+});
+dash.draw('t-year', el => { const r = window.mxRange(); el.textContent = r && r.year !== null ? String(r.year) : '—'; });
+dash.draw('t-year2', el => { const r = window.mxRange(); el.textContent = r && r.year !== null ? String(r.year) : '—'; });
+dash.draw('t-same', el => { const r = window.mxRange(); window.mxMark(el, r && r.max); });
+// Picks the sentence: a range, or agreement when every line shows the same value
+dash.draw('lede-toggle', el => {
+  const r = window.mxRange();
+  const same = !!(r && r.max && r.min && window.MX.fmt(r.max.p.amount) === window.MX.fmt(r.min.p.amount));
+  document.querySelectorAll('#lede-range').forEach(n => { n.hidden = same; });
+  document.querySelectorAll('#lede-same').forEach(n => { n.hidden = !same; });
+});
+dash.draw('t-max', el => { const r = window.mxRange(); window.mxMark(el, r && r.max); });
+dash.draw('t-min', el => { const r = window.mxRange(); window.mxMark(el, r && r.min); });
+dash.draw('t-maxname', el => { const r = window.mxRange(); el.textContent = r && r.max ? r.max.l.name : '—'; });
+dash.draw('t-minname', el => { const r = window.mxRange(); el.textContent = r && r.min ? r.min.l.name : '—'; });
+</script>
+
+<script>
+// The line chart
+dash.draw('chart', {
+  mount(el) {
+    const tip = document.createElement('div');
+    tip.className = 'mx-tip'; tip.hidden = true;
+    el.append(tip);
+    return { tip, first: true };
+  },
+  update(el, made) {
+    const st = window.MX_STATE, L = window.MX_LABELS;
+    el.querySelectorAll('svg, .mx-empty').forEach(n => n.remove());
+    made.tip.hidden = true;
+    const say = t => { const p = document.createElement('p'); p.className = 'mx-empty'; p.textContent = t; el.append(p); };
+    const status = window.MX.status();
+    if (status !== 'ok') { say(status === 'error' ? 'Failed to load' : 'Loading'); return; }
+    const ls = window.MX.shown().map(l => Object.assign({}, l, { points: l.points.filter(p => !p.flag) })).filter(l => l.points.length);
+    if (!ls.length) { say(window.MX.lines().length ? 'All lines are hidden. Click a name above to show it.' : 'No source reports this drug, unit and place in this view. Try another unit or place, or the other view.'); return; }
+    const W = Math.max(300, el.clientWidth || el.getBoundingClientRect().width || 700), H = 340;
+    const all = ls.flatMap(l => l.points);
+    const x0 = Math.min(d3.min(all, p => p.year), 2017), x1 = Math.max(d3.max(all, p => p.year), 2024);
+    const yMax = d3.max(all, p => p.amount), yMin = d3.min(all, p => p.amount);
+    const logOK = st.scale === 'log' && yMin > 0;
+    const y = (logOK ? d3.scaleLog().domain([yMin * 0.8, yMax * 1.25]) : d3.scaleLinear().domain([0, yMax * 1.08])).nice();
+    const tickFmt = d3.format('~s');
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('height', H).attr('viewBox', `0 0 ${W} ${H}`)
+      .attr('role', 'img').attr('aria-label', `${L.drug[st.drug] || st.drug} seized per year, in ${L.unit[st.unit] || st.unit}, ${ls.length} lines`);
+    let ticks = y.ticks(logOK ? 5 : 6);
+    if (logOK && ticks.length > 8) ticks = ticks.filter(t => Math.abs(Math.log10(t) % 1) < 1e-9);
+    const probe = svg.append('g').attr('class', 'tick');
+    let wMax = 0;
+    ticks.forEach(t => { const tx = probe.append('text').text(tickFmt(t)); wMax = Math.max(wMax, tx.node().getComputedTextLength()); });
+    probe.remove();
+    const m = { top: 22, right: 16, bottom: 28, left: Math.ceil(wMax) + 14 };
+    const x = d3.scaleLinear().domain([x0 - 0.5, x1 + 0.5]).range([m.left, W - m.right]);
+    y.range([H - m.bottom, m.top]);
+    const A = window.MX_AMLO;
+    svg.append('rect').attr('class', 'mx-band').attr('x', x(A.from)).attr('width', x(A.to) - x(A.from)).attr('y', m.top).attr('height', H - m.top - m.bottom);
+    svg.append('text').attr('class', 'mx-bandlabel').attr('x', x(A.from) + 4).attr('y', m.top - 7).text('López Obrador');
+    svg.append('g').attr('class', 'mx-grid').attr('transform', `translate(${m.left},0)`)
+      .call(d3.axisLeft(y).tickValues(ticks).tickSize(-(W - m.left - m.right)).tickFormat('')).call(g => g.select('.domain').remove());
+    svg.append('g').attr('transform', `translate(${m.left},0)`).call(d3.axisLeft(y).tickValues(ticks).tickFormat(tickFmt)).call(g => g.select('.domain').remove());
+    const span = x1 - x0, step = W < 520 ? (span > 18 ? 10 : 4) : (span > 24 ? 5 : 2);
+    const xt = d3.range(Math.ceil(x0 / step) * step, x1 + 1, step);
+    svg.append('g').attr('transform', `translate(0,${H - m.bottom})`).call(d3.axisBottom(x).tickValues(xt).tickFormat(d3.format('d')));
+    const line = d3.line().x(p => x(p.year)).y(p => y(p.amount));
+    const g = svg.append('g');
+    ls.forEach(l => {
+      const segs = []; let cur = [];
+      l.points.forEach((p, i) => { if (i && p.year !== l.points[i - 1].year + 1) { segs.push(cur); cur = []; } cur.push(p); });
+      segs.push(cur);
+      segs.forEach(seg => { if (seg.length > 1) g.append('path').attr('d', line(seg)).attr('fill', 'none').style('stroke', l.color).attr('stroke-width', l.main || st.view === 'agency' ? 2.4 : 1.7).attr('stroke-dasharray', l.dash); });
+      g.selectAll(null).data(l.points).join('circle').attr('cx', p => x(p.year)).attr('cy', p => y(p.amount)).attr('r', 3.2)
+        .style('fill', p => p.partial ? 'var(--color-bg)' : l.color).style('stroke', l.color).attr('stroke-width', 1.5);
+    });
+    // Tooltip with every shown value for the nearest year
+    const tip = made.tip;
+    const byYear = d3.group(ls.flatMap(l => l.points.map(p => ({ l, p }))), d => d.p.year);
+    const guide = svg.append('line').style('stroke', 'var(--cds-chart-reference)').attr('y1', m.top).attr('y2', H - m.bottom).attr('visibility', 'hidden');
+    const show = evt => {
+      const [px] = d3.pointer(evt, svg.node());
+      const yr = Math.round(x.invert(px));
+      const list = byYear.get(yr);
+      if (!list) { tip.hidden = true; guide.attr('visibility', 'hidden'); return; }
+      guide.attr('x1', x(yr)).attr('x2', x(yr)).attr('visibility', 'visible');
+      const head = document.createElement('div'); head.style.fontWeight = 'var(--cds-font-weight-medium)'; head.style.marginBottom = '4px';
+      head.textContent = yr + ', ' + (L.unit[st.unit] || st.unit);
+      const items = list.slice().sort((a, b) => b.p.amount - a.p.amount).map(({ l, p }) => {
+        const r = document.createElement('div'); r.className = 'mx-tiprow';
+        const dot = document.createElement('span'); dot.className = 'mx-dot'; dot.style.background = l.color;
+        const n = document.createElement('span'); n.className = 'mx-tipname'; n.textContent = l.name + (p.partial ? ' (part of year)' : '');
+        const v = document.createElement('span'); v.textContent = window.MX.fmt(p.amount);
+        r.append(dot, n, v); return r;
+      });
+      tip.replaceChildren(head, ...items);
+      tip.hidden = false;
+      const box = el.getBoundingClientRect(), cx = evt.clientX - box.left, tw = tip.offsetWidth;
+      tip.style.left = Math.max(0, Math.min(box.width - tw, cx > box.width / 2 ? cx - tw - 14 : cx + 14)) + 'px';
+      tip.style.top = (m.top + 6) + 'px';
+    };
+    svg.append('rect').attr('x', m.left).attr('y', m.top).attr('width', W - m.left - m.right).attr('height', H - m.top - m.bottom)
+      .attr('fill', 'transparent').style('cursor', 'crosshair')
+      .on('pointermove', show).on('pointerdown', show)
+      .on('pointerleave', () => { tip.hidden = true; guide.attr('visibility', 'hidden'); });
+    el.append(tip);
+    if (made.first && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+      made.first = false;
+      g.style('opacity', 0).transition().duration(350).style('opacity', 1);
+    }
+  }
+});
+</script>
+
+<script>
+// The table: one row per line, years across
+dash.draw('table', tbl => {
+  const st = window.MX_STATE, A = window.MX_AMLO;
+  tbl.replaceChildren();
+  if (window.MX.status() !== 'ok') return;
+  const ls = window.MX.shown();
+  if (!ls || !ls.length) return;
+  const allYears = ls.flatMap(l => l.points.map(p => p.year));
+  const y0 = Math.max(st.fromYear, d3.min(allYears)), y1 = d3.max(allYears);
+  const years = d3.range(y0, y1 + 1);
+  const thead = tbl.createTHead(), hr = thead.insertRow();
+  const th0 = document.createElement('th'); th0.className = 'mx-rowname'; th0.textContent = 'Source'; hr.append(th0);
+  years.forEach(yr => { const th = document.createElement('th'); th.textContent = String(yr); if (yr >= A.firstYear && yr <= A.lastYear) th.className = 'mx-amloyr'; hr.append(th); });
+  const body = tbl.createTBody();
+  ls.forEach(l => {
+    const tr = body.insertRow();
+    const c0 = tr.insertCell(); c0.className = 'mx-rowname';
+    const inner = document.createElement('span'); inner.className = 'mx-rowinner';
+    const sw = document.createElement('span'); sw.className = 'mx-swatch'; sw.style.borderTopColor = l.color; sw.style.borderTopStyle = l.dash ? (l.role === 'contrast' ? 'dotted' : 'dashed') : 'solid';
+    const nm = document.createElement('span'); nm.textContent = l.name;
+    inner.append(sw, nm); c0.append(inner);
+    const by = new Map(l.points.map(p => [p.year, p]));
+    years.forEach(yr => {
+      const td = tr.insertCell(), p = by.get(yr);
+      if (!p) { td.textContent = '·'; td.className = 'mx-none'; return; }
+      td.textContent = window.MX.fmt(p.amount) + (p.flag ? ' (likely error)' : '');
+      td.setAttribute('data-source', 'seizures'); td.setAttribute('data-field', 'amount'); td.setAttribute('data-where', window.MX.where(p));
+      if (p.flag) { td.className = 'mx-flagged'; td.title = p.flag; }
+      else if (p.partial) td.className = 'mx-partial';
+    });
+  });
+});
+</script>
+
+<script>
+// Coverage: one row per source, grouped by agency
+dash.draw('coverage', box => {
+  const S = window.MX.sources(), L = window.MX_LABELS, A = window.MX_AMLO;
+  if (!S) { box.textContent = '—'; return; }
+  const pos = y => ((y - 1990) / (2027 - 1990)) * 100;
+  const regOf = s => (s.register === 'pooled' || s.register === 'compiled') ? 'totals' : s.register;
+  const groups = d3.group([...S.values()], regOf);
+  const out = [];
+  L.registerOrder.forEach(reg => {
+    const list = groups.get(reg); if (!list) return;
+    list.sort((a, b) => (+b.main) - (+a.main) || (+a.first_year) - (+b.first_year));
+    const sec = document.createElement('div'); sec.className = 'mx-covgroup';
+    const h = document.createElement('h3'); h.textContent = L.register[reg]; sec.append(h);
+    list.forEach(s => {
+      const det = document.createElement('details'); det.className = 'mx-covitem';
+      const sum = document.createElement('summary');
+      const caret = document.createElement('span'); caret.className = 'mx-caret'; caret.textContent = '▶'; caret.setAttribute('aria-hidden', 'true');
+      const name = document.createElement('span'); name.className = 'mx-covname';
+      const nm = document.createElement('span'); nm.textContent = s.short;
+      const pill = document.createElement('span');
+      const isMain = String(s.main) === '1';
+      pill.className = 'mx-pill' + (isMain ? ' mx-main' : s.role === 'contrast' ? ' mx-contrast' : '');
+      pill.textContent = isMain ? 'Main source' : s.role === 'contrast' ? 'Comparison only' : 'Other version';
+      name.append(nm, pill);
+      const bar = document.createElement('div'); bar.className = 'mx-covbar';
+      bar.setAttribute('role', 'img'); bar.setAttribute('aria-label', s.short + ': ' + s.first_year + ' to ' + s.last_year);
+      const am = document.createElement('span'); am.className = 'mx-covamlo'; am.style.left = pos(A.from) + '%'; am.style.width = (pos(A.to) - pos(A.from)) + '%';
+      const sp = document.createElement('span'); sp.className = 'mx-covspan'; sp.style.left = pos(+s.first_year) + '%'; sp.style.width = Math.max(1, pos(+s.last_year + 1) - pos(+s.first_year)) + '%';
+      bar.append(am, sp);
+      sum.append(caret, name, bar);
+      const dl = document.createElement('dl'); dl.className = 'mx-covdetail';
+      const add = (k, v, field) => {
+        const dt = document.createElement('dt'); dt.textContent = k;
+        const dd = document.createElement('dd'); dd.textContent = v;
+        if (field) { dd.setAttribute('data-source', 'sources'); dd.setAttribute('data-field', field); dd.setAttribute('data-where', 'source_id=' + encodeURIComponent(s.source_id)); }
+        dl.append(dt, dd);
+      };
+      add('Full name', s.label, 'label');
+      add('Years', s.first_year + ' to ' + s.last_year);
+      add('Most detailed level', s.finest, 'finest');
+      add('Counts seizure events', String(s.counts_events) === '1' ? 'Yes' : 'No');
+      add('Drugs', String(s.drugs).split(', ').map(d => L.drug[d] || d).join(', '));
+      add('Notes', s.note, 'note');
+      add('Where we hold it', s.where_held, 'where_held');
+      det.append(sum, dl);
+      sec.append(det);
+    });
+    out.push(sec);
+  });
+  box.replaceChildren(...out);
+});
+</script>
+
+</main>
+<footer class="site-foot">Working draft, November 2026. Data: <a href="data/dash_seizures.csv">seizures by source</a> and <a href="data/dash_sources.csv">source list</a>. See also <a href="matrix.html">what data exists</a> for every stage of enforcement, from precursors to arrests.</footer>
+</div>
+</body>
+</html>
