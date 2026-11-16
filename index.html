@@ -60,8 +60,6 @@ window.dash = (function () {
 .mx [hidden] { display: none !important; }
 .mx-title { font-family: var(--font-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
 .mx-intro { margin: var(--cds-gap-sm) 0 0; max-width: 70ch; line-height: 1.55; color: var(--color-fg-muted); }
-.mx-lede { margin: var(--cds-gap-sm) 0 0; max-width: 70ch; line-height: 1.55; font-size: var(--cds-font-size-body); }
-.mx-lede b { font-weight: var(--cds-font-weight-medium); font-variant-numeric: tabular-nums; }
 .mx-panel { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-md); }
 .mx-views { display: inline-flex; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; align-self: flex-start; max-width: 100%; flex-wrap: wrap; }
 .mx-views button { font: inherit; font-size: var(--cds-font-size-caption); padding: 7px 14px; background: var(--color-bg); color: var(--color-fg); border: 0; cursor: pointer; }
@@ -91,7 +89,7 @@ window.dash = (function () {
 .mx-empty { color: var(--color-fg-muted); padding: var(--cds-pad-lg) 0; margin: 0; }
 .mx-caption { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin: var(--cds-gap-sm) 0 0; max-width: 70ch; line-height: 1.5; }
 .mx-flagnote { color: var(--color-warn); font-size: var(--cds-font-size-caption); margin: var(--cds-gap-xs) 0 0; max-width: 70ch; }
-.mx-tablehead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: var(--cds-gap-md); }
+.mx-sel { margin: 0 0 var(--cds-gap-sm); font-size: var(--cds-font-size-caption); font-weight: var(--cds-font-weight-medium); }
 .mx-tablewrap { overflow-x: auto; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); }
 .mx-table { border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
 .mx-table th, .mx-table td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
@@ -137,11 +135,6 @@ window.dash = (function () {
   <header id="top">
     <h1 class="mx-title">Mexico drug seizures by source</h1>
     <p class="mx-intro">How much of each drug Mexican agencies say they seized each year, from every government source we hold. Compare agencies, or compare the different versions of one agency's own records, which do not always agree.</p>
-    <p class="mx-lede" id="takeaway"><span data-draw="t-what">—</span>.
-      <span id="lede-range">In <b data-draw="t-year">—</b>, the highest figure shown is <b data-draw="t-max">—</b> (<span data-draw="t-maxname">—</span>) and the lowest <b data-draw="t-min">—</b> (<span data-draw="t-minname">—</span>).</span>
-      <span id="lede-same" hidden>In <b data-draw="t-year2">—</b>, every line shown reports <b data-draw="t-same">—</b>.</span>
-      <span data-draw="lede-toggle" hidden></span>
-    </p>
   </header>
 
   <section id="controls" class="mx-panel" aria-label="What to show">
@@ -174,7 +167,7 @@ window.dash = (function () {
   </section>
 
   <section id="chart-sec" aria-labelledby="chart-title">
-    <h2 class="mx-h2" id="chart-title">Amount seized each year</h2>
+    <h2 class="mx-h2" id="chart-title" data-draw="sel-text">Amount seized each year</h2>
     <div class="mx-legend" id="legend" data-draw="legend" data-source="sources" aria-label="Lines shown; click to hide or show"></div>
     <div class="mx-chart" id="chart" data-draw="chart" data-source="seizures sources"></div>
     <p class="mx-caption">Shaded: López Obrador's term, December 2018 to September 2024. Hollow points: a year the source covers only in part. Click a name above to hide or show its line; point at the chart to read the values.</p>
@@ -183,20 +176,12 @@ window.dash = (function () {
   </section>
 
   <section id="table-sec" aria-labelledby="table-title">
-    <div class="mx-tablehead">
-      <h2 class="mx-h2" id="table-title">The same numbers, year by year</h2>
-      <label class="mx-field">Years
-        <select class="dash-select" id="f-years" aria-label="Years in the table">
-          <option value="2012">From 2012 (Peña Nieto on)</option>
-          <option value="2000">From 2000</option>
-          <option value="1990">All years</option>
-        </select>
-      </label>
-    </div>
-    <div class="mx-tablewrap">
+    <h2 class="mx-h2" id="table-title">The same numbers, year by year</h2>
+    <p class="mx-sel" data-draw="sel-text"></p>
+    <div class="mx-tablewrap" id="table-wrap">
       <table class="mx-table" id="values-table" data-draw="table" data-source="seizures"></table>
     </div>
-    <p class="mx-caption">One row per line in the chart. Shaded years: López Obrador's term. Italics: a year the source covers only in part. A dot: nothing reported. Values are in the unit chosen above.</p>
+    <p class="mx-caption">One row per line in the chart; it follows the choices above and the names you hide. It opens on the latest years: scroll sideways for earlier ones. Shaded years: López Obrador's term. Italics: a year the source covers only in part. A dot: nothing reported.</p>
   </section>
 
   <section id="coverage-sec" aria-labelledby="coverage-title">
@@ -232,7 +217,7 @@ window.MX_LABELS = {
 // López Obrador's term: December 2018 to September 2024
 window.MX_AMLO = { from: 2018.92, to: 2024.75, firstYear: 2019, lastYear: 2024 };
 // What the reader picked; changed only by the controls
-window.MX_STATE = window.MX_STATE || { view: 'agency', register: 'army', drug: 'fentanyl', unit: 'kg', place: '00', scale: 'linear', fromYear: 2012, off: {} };
+window.MX_STATE = window.MX_STATE || { view: 'agency', register: 'army', drug: 'fentanyl', unit: 'kg', place: '00', scale: 'linear', off: {} };
 </script>
 
 <script>
@@ -311,7 +296,7 @@ window.MX = (function () {
 })();
 
 window.mxRedraw = function () {
-  ['register-select', 'unit-select', 'place-select', 'legend', 'chart', 'table', 'flag-toggle', 't-what', 't-year', 't-max', 't-min', 't-maxname', 't-minname', 't-year2', 't-same', 'lede-toggle'].forEach(n => dash.draw(n));
+  ['register-select', 'unit-select', 'place-select', 'legend', 'chart', 'table', 'flag-toggle', 'sel-text'].forEach(n => dash.draw(n));
 };
 
 // The view buttons, scale and years have fixed choices written in the HTML; scripts only listen
@@ -331,10 +316,6 @@ document.querySelectorAll('[data-view]').forEach(btn => {
 document.querySelectorAll('#f-scale').forEach(el => {
   el.value = window.MX_STATE.scale;
   el.addEventListener('change', () => { window.MX_STATE.scale = el.value; dash.draw('chart'); });
-});
-document.querySelectorAll('#f-years').forEach(el => {
-  el.value = String(window.MX_STATE.fromYear);
-  el.addEventListener('change', () => { window.MX_STATE.fromYear = +el.value; dash.draw('table'); });
 });
 </script>
 
@@ -392,7 +373,7 @@ dash.draw('legend', box => {
     sw.style.borderTopColor = l.color; sw.style.borderTopStyle = l.dash ? (l.role === 'contrast' ? 'dotted' : 'dashed') : 'solid';
     const tx = document.createElement('span'); tx.textContent = l.name;
     b.append(sw, tx);
-    b.onclick = () => { st.off[l.key] = !st.off[l.key]; ['legend', 'chart', 'table', 'flag-toggle', 't-year', 't-max', 't-min', 't-maxname', 't-minname', 't-year2', 't-same', 'lede-toggle'].forEach(n => dash.draw(n)); };
+    b.onclick = () => { st.off[l.key] = !st.off[l.key]; ['legend', 'chart', 'table', 'flag-toggle'].forEach(n => dash.draw(n)); };
     return b;
   }));
 });
@@ -406,43 +387,14 @@ dash.draw('flag-toggle', el => {
 </script>
 
 <script>
-// The sentence under the title: highest and lowest line in the latest
-// year that at least two shown lines cover in full
-window.mxRange = function () {
-  const ls = window.MX.shown();
-  if (!ls) return null;
-  const pts = ls.flatMap(l => l.points.filter(p => !p.partial && !p.flag).map(p => ({ p, l })));
-  const byYear = d3.group(pts, d => d.p.year);
-  const years = [...byYear.keys()].filter(y => byYear.get(y).length >= 2).sort((a, b) => a - b);
-  if (!years.length) return { year: null };
-  const y = years[years.length - 1], list = byYear.get(y);
-  return { year: y, max: d3.greatest(list, d => d.p.amount), min: d3.least(list, d => d.p.amount) };
-};
-window.mxMark = function (el, d) {
-  if (!d) { el.textContent = '—'; el.removeAttribute('data-where'); el.removeAttribute('data-source'); return; }
-  el.textContent = window.MX.fmt(d.p.amount) + ' ' + window.MX_LABELS.unitShort[d.p.unit];
-  el.setAttribute('data-source', 'seizures'); el.setAttribute('data-field', 'amount'); el.setAttribute('data-where', window.MX.where(d.p));
-};
-dash.draw('t-what', el => {
+// Names the current selection, over the chart and over the table
+dash.draw('sel-text', el => {
   const st = window.MX_STATE, L = window.MX_LABELS;
-  if (!window.MX.rows()) { el.textContent = '—'; return; }
-  const scope = st.view === 'agency' ? 'by agency' : 'in the versions of ' + L.register[st.register] + ' records';
-  el.textContent = (L.drug[st.drug] || st.drug) + ' seized, in ' + (L.unit[st.unit] || st.unit) + ', ' + (st.place === '00' ? 'nationally' : 'in ' + (L.place[st.place] || st.place)) + ', ' + scope;
+  if (!window.MX.rows()) { el.textContent = 'Loading'; return; }
+  const where = st.place === '00' ? 'Mexico, national' : (L.place[st.place] || st.place);
+  const scope = st.view === 'agency' ? 'one line per agency' : 'versions of ' + L.register[st.register] + ' records';
+  el.textContent = (L.drug[st.drug] || st.drug) + ' seized each year, in ' + (L.unit[st.unit] || st.unit) + ' · ' + where + ' · ' + scope;
 });
-dash.draw('t-year', el => { const r = window.mxRange(); el.textContent = r && r.year !== null ? String(r.year) : '—'; });
-dash.draw('t-year2', el => { const r = window.mxRange(); el.textContent = r && r.year !== null ? String(r.year) : '—'; });
-dash.draw('t-same', el => { const r = window.mxRange(); window.mxMark(el, r && r.max); });
-// Picks the sentence: a range, or agreement when every line shows the same value
-dash.draw('lede-toggle', el => {
-  const r = window.mxRange();
-  const same = !!(r && r.max && r.min && window.MX.fmt(r.max.p.amount) === window.MX.fmt(r.min.p.amount));
-  document.querySelectorAll('#lede-range').forEach(n => { n.hidden = same; });
-  document.querySelectorAll('#lede-same').forEach(n => { n.hidden = !same; });
-});
-dash.draw('t-max', el => { const r = window.mxRange(); window.mxMark(el, r && r.max); });
-dash.draw('t-min', el => { const r = window.mxRange(); window.mxMark(el, r && r.min); });
-dash.draw('t-maxname', el => { const r = window.mxRange(); el.textContent = r && r.max ? r.max.l.name : '—'; });
-dash.draw('t-minname', el => { const r = window.mxRange(); el.textContent = r && r.min ? r.min.l.name : '—'; });
 </script>
 
 <script>
@@ -547,7 +499,7 @@ dash.draw('table', tbl => {
   const ls = window.MX.shown();
   if (!ls || !ls.length) return;
   const allYears = ls.flatMap(l => l.points.map(p => p.year));
-  const y0 = Math.max(st.fromYear, d3.min(allYears)), y1 = d3.max(allYears);
+  const y0 = d3.min(allYears), y1 = d3.max(allYears);
   const years = d3.range(y0, y1 + 1);
   const thead = tbl.createTHead(), hr = thead.insertRow();
   const th0 = document.createElement('th'); th0.className = 'mx-rowname'; th0.textContent = 'Source'; hr.append(th0);
@@ -570,6 +522,8 @@ dash.draw('table', tbl => {
       else if (p.partial) td.className = 'mx-partial';
     });
   });
+  const wrap = tbl.closest('.mx-tablewrap');
+  if (wrap) requestAnimationFrame(() => { wrap.scrollLeft = wrap.scrollWidth; });
 });
 </script>
 
