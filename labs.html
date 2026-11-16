@@ -35,7 +35,7 @@ window.dash = (function () {
     const load = (id, url) => d3.csv(url).then(
       rows => { store[id] = { status: 'ok', data: rows }; },
       err => { store[id] = { status: 'error', data: [] }; console.error(url, err); });
-    Promise.all([load('seizures', 'data/labs.csv?v=2026-11-16'), load('sources', 'data/labs_sources.csv?v=2026-11-16')]).then(api.all);
+    Promise.all([load('seizures', 'data/labs.csv?v=2026-11-16b'), load('sources', 'data/labs_sources.csv?v=2026-11-16b')]).then(api.all);
     const chart = document.getElementById('chart');
     let lastW = chart ? chart.clientWidth : 0, timer = null;
     window.addEventListener('resize', () => {
@@ -193,7 +193,7 @@ window.dash = (function () {
     <summary>How to read the sources</summary>
     <p>Each agency keeps its own register of the clandestine labs it finds: the army (SEDENA), the Federal Police and then the Guardia Nacional, the federal prosecutors (FGR), and state police. The navy (SEMAR) appears only in press releases, so it has no line. The same register reaches us in several versions: an answer to a transparency request, the same register published by researchers (GI-TOC, Quinto Elemento Lab), a yearly public sheet, or an INEGI census.</p>
     <p>Main source: the version drawn in the one-line-per-agency view. For the army it is the GI-TOC tables: the same register as SEDENA's answer to folio 330026423000179, identical to it in every year and drug from 1990 to 2022, and running to June 2024. Comparison only: UNODC's figures and Alejandro's compiled file, never added to agency lines.</p>
-    <p>A lab is counted once, in the year it was found. None of the lab registers here codes a lab as fentanyl: SEDENA's register has only methamphetamine, heroin and cocaine categories. SEDENA did count 26 fentanyl pill sites separately, April 2019 to October 2024 (transparency folio 330026424002985, known from press reports; the file was not obtained, so it is not in the chart). Only the army's register, GI-TOC, UNODC and one Guardia Nacional answer say what drug a lab produced; for the other sources choose "All labs". Per Reuters, the army's counts include inactive sites.</p>
+    <p>A lab is counted once, in the year it was found. None of the lab registers here codes a lab as fentanyl: SEDENA's register has only methamphetamine, heroin and cocaine categories. SEDENA did count 26 fentanyl pill sites separately, April 2019 to October 2024 (transparency folio 330026424002985, known from press reports; the file was not obtained). They are their own line: pick Fentanyl in the versions of SEDENA's records. Only the army's register, GI-TOC, UNODC and one Guardia Nacional answer say what drug a lab produced; for the other sources choose "All labs". Per Reuters, the army's counts include inactive sites.</p>
     <p>Download the data: <a href="data/labs.csv">labs.csv</a> (one row per source, agency, place, year and drug produced) and <a href="data/labs_sources.csv">labs_sources.csv</a> (one row per source, with its years, detail and notes).</p>
     <p>Known gaps: the Federal Police answer has no labs after 2018; the Guardia Nacional answers cover 2019 to 2021 and the INEGI census asks about labs only for 2024 and 2025; the FGR census is national only for 2015 and 2016; state police appear only in 2024 and 2025.</p>
   </details>

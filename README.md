@@ -35,7 +35,7 @@ Three pages:
 | agency | Agency as the source names it |
 | place | INEGI state code; 00 is national |
 | year | Calendar year the lab was found |
-| product | Drug the lab produced: all (every lab), meth, heroin, cocaine, other, not_stated |
+| product | Drug the lab produced: all (every lab), meth, heroin, cocaine, fentanyl, other, not_stated |
 | labs | Number of labs |
 | partial | 1 when the source covers only part of that year |
 | flag | Values kept out of the chart as likely errors at the source (none so far) |
@@ -46,4 +46,4 @@ Three pages:
 
 Seizures: the navy and Guardia Nacional transparency answers stop in 2022 and 2021; after that the Guardia Nacional appears only in INEGI's police census. The INEGI federal prosecutor census has no seizure table for 2020 and 2021. SEDENA's yearly public sheets count marijuana seized plus incinerated. The FGR fentanyl file has a likely unit error in 2020 (flagged).
 
-Labs: only the army's register, GI-TOC, UNODC and one Guardia Nacional answer record the drug produced, and none has a fentanyl category; SEDENA counted 26 fentanyl pill sites separately in 2019 to 2024 (folio 330026424002985, known from press reports, file not obtained). The Federal Police answer has no labs after 2018; the INEGI police censuses ask about labs only for 2024 and 2025. UNODC's figures equal the FGR census in 2020 to 2022.
+Labs: only the army's register, GI-TOC, UNODC and one Guardia Nacional answer record the drug produced, and none has a fentanyl category; SEDENA counted 26 fentanyl pill sites separately in 2019 to 2024 (folio 330026424002985, known from press reports, file not obtained), shown as their own line. The Federal Police answer has no labs after 2018; the INEGI police censuses ask about labs only for 2024 and 2025. UNODC's figures equal the FGR census in 2020 to 2022.
