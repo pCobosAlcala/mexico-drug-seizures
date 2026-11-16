@@ -35,7 +35,8 @@
 .ax { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-fg-muted); }
 .ax b { color: var(--color-fg); font-weight: 600; }
 .file { font-family: var(--font-mono); font-size: 11.5px; color: var(--color-fg-muted); margin-top: 3px; overflow-wrap: anywhere; }
-.toDash { display: inline-block; margin-top: 8px; font-weight: 600; }
+.toDash { display: inline-block; margin: 0 0 8px; font-weight: 600; }
+.src a.web { display: inline-block; margin-top: 3px; font-size: 13px; }
 .ext { margin-top: 36px; }
 .ext h2 { font-size: var(--cds-font-size-heading); font-weight: 600; margin: 0 0 4px; }
 .ext p { margin: 0 0 8px; color: var(--color-fg-muted); max-width: 72ch; }
@@ -80,6 +81,7 @@
       <li><b>SEDENA and FGR fentanyl by state under López Obrador.</b> Reported in the press (N+, Vanguardia) without a published file; a transparency request should get it.</li>
       <li><b>Informe de Seguridad deck, April 2023</b>: national fentanyl by month in kilograms, pills and ampoules. A public PDF on gob.mx, not yet downloaded.</li>
       <li><b>Calderón's Informe annexes with state tables</b>, 2007 to 2012. Listed in the annex index but not found in the archives.</li>
+      <li><b>SEDENA's fentanyl pill sites</b> (transparency folio 330026424002985): 26 sites from April 2019 to October 2024, known only from press reports. The answer file itself would come from the transparency platform.</li>
       <li><b>FGR CENAPI answer</b> (folio 0001700006421), 2000 to 2020 by state, all agencies pooled. We hold it, but it is a scanned PDF that needs text recognition.</li>
     </ul>
   </section>
@@ -120,10 +122,11 @@ const D = {
 '1,5': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, Esfuerzo Nacional', 2005, 2024, 'National, year', 'Hectares of marijuana and poppy', 'informes_gobierno (6th Informe, page 691)', '2024 is January to June.')] },
 
 '2,0': { s: 'fine', l: 'Municipal, by drug', src: [
-  S('SEDENA answer to folio 330026423000179', 1990, 2022, 'Municipality, month', 'Drug produced: 2,681 meth, 23 heroin, 2 cocaine, none fentanyl', '.../330026423000179_SEDENA (sheet LABORATORIOS)', '2,706 labs.'),
+  S('SEDENA answer to folio 330026423000179', 1990, 2022, 'Municipality, month', 'Drug produced: 2,681 meth, 23 heroin, 2 cocaine; the field has no fentanyl category', '.../330026423000179_SEDENA (sheet LABORATORIOS)', '2,706 labs.'),
   S('GI-TOC tables (same register)', 1990, 2024, 'Municipality, year', 'Drug produced; 3,752 labs, none fentanyl', 'gitoc_viz/extracted_from_html', 'National counts identical to the folio in every year and drug from 1990 to 2022; runs to June 2024. The main SEDENA line in the labs dashboard.'),
   S('Quinto Elemento lab map', 2018, 2023, 'Municipality, exact day', 'No drug', 'bases/peter_mexico_drugs/raw/quintoelab_labs_flourish', '2,133 labs. Identical to the register in 2018 to 2022.'),
-  S('SEDENA yearly public sheets', 2014, 2026, 'National, year', 'Count only', 'sedena_operaciones_narcotrafico', 'To September 2026. A separate sheet for October 2024 to December 2025 pools labs with "concentration areas".')] },
+  S('SEDENA yearly public sheets', 2014, 2026, 'National, year', 'Count only', 'sedena_operaciones_narcotrafico', 'To September 2026. A separate sheet for October 2024 to December 2025 pools labs with "concentration areas".'),
+  S('SEDENA fentanyl pill sites, folio 330026424002985', 2019, 2024, 'Municipality', 'Fentanyl pill manufacturing sites: 26, April 2019 to October 2024 (22 in Culiacán, 3 in Tijuana, 1 in Guadalupe y Calvo)', 'not held: known from press reports (Grupo Animal, El Financiero)', 'Counted apart from the lab register, which has no fentanyl category. The file itself was not obtained.')] },
 '2,1': { s: 'part', l: 'Press only', src: [S('SEMAR press release', 2025, 2025, 'One operation', 'Meth lab in Zacatecas', 'bases/peter_mexico_drugs/raw/semar_zacatecas', 'One release held.')] },
 '2,2': { s: 'fine', l: 'Municipal, monthly', src: [
   S('Federal Police answer to folio 0413100015520', 2007, 2018, 'Municipality, month', 'No drug', '.../0413100015520_PF (sheet Laboratorios)', '438 labs; none after December 2018.'),
@@ -221,6 +224,24 @@ R.forEach((r, i) => {
   });
 });
 
+// Where each source can be found online (links checked 16 Nov 2026); matched on its name and file
+const WEB = [
+  [/330026423000179|330026623000117|0413100015520|332259822000079|0001700006421/, 'https://www.mucd.org.mx/wp-content/uploads/2023/06/Respuestas_autoridades.zip', 'Transparency answers, published by MUCD (zip file)'],
+  [/GI-TOC/, 'https://page.globalinitiative.net/fentanyl-and-synthetic-drugs-monitor-1/', 'GI-TOC Fentanyl and Synthetic Drugs Monitor'],
+  [/Quinto Elemento/, 'https://public.flourish.studio/visualisation/17111975/', 'Quinto Elemento Lab map'],
+  [/yearly public sheets/, 'https://www.gob.mx/defensa/acciones-y-programas/operaciones-contra-el-narcotrafico-6963', 'SEDENA, Operaciones contra el narcotráfico'],
+  [/CNPJF|federal prosecutor census|INEGI prosecutor census/, 'https://www.inegi.org.mx/programas/cnpjf/2025/', 'INEGI federal prosecutor census'],
+  [/CNSPF|federal police census/, 'https://www.inegi.org.mx/programas/cnspf/', 'INEGI federal police census'],
+  [/CNSPE|state police census/, 'https://www.inegi.org.mx/programas/cnspe/', 'INEGI state police census'],
+  [/CNPJE|state prosecutor census/, 'https://www.inegi.org.mx/programas/cnpje/', 'INEGI state prosecutor census'],
+  [/UNODC/, 'https://www.unodc.org/unodc/en/data-and-analysis/world-drug-report-2026.html', 'UNODC World Drug Report 2026'],
+  [/InSight Crime/, 'https://insightcrime.org/', 'InSight Crime (site home; the article is not linked)']
+];
+const webOf = s => WEB.find(w => w[0].test(s.n + ' ' + s.f));
+// Dashboards for the rows already harmonized, and the agency each column opens on
+const DASHES = { 3: ['index.html', 'seizures dashboard', ['army', 'navy', 'federal_police_gn', 'fgr', 'state_police', 'totals']],
+                 2: ['labs.html', 'labs dashboard', ['army', null, 'federal_police_gn', 'fgr', 'state_police', 'totals']] };
+
 // The detail panel for one cell
 function show(k, scroll) {
   mtx.querySelectorAll('.cell').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.k === k)));
@@ -228,6 +249,12 @@ function show(k, scroll) {
   const out = [el('h2', null, R[i] + ' · ' + C[j])];
   if (!d.src.length) out.push(el('p', 'lead', d.t || 'Nothing held for this cell.'));
   else out.push(el('p', 'lead', d.src.length === 1 ? 'One source.' : d.src.length + ' sources, the most detailed first.'));
+  if (DASHES[i] && d.src.length) {
+    const reg = DASHES[i][2][j];
+    const a = el('a', 'toDash', 'Open these sources in the ' + DASHES[i][1] + ' →');
+    a.href = DASHES[i][0] + (reg ? '?view=versions&register=' + reg : '');
+    out.push(a);
+  }
   d.src.forEach(s => {
     const box = el('div', 'src');
     box.append(el('div', 'n', s.n), el('div', null, s.g + ' · ' + s.d));
@@ -239,15 +266,11 @@ function show(k, scroll) {
     const ax = el('div', 'ax'); ax.append(el('span', null, String(Y0)), el('b', null, s.y0 === s.y1 ? String(s.y0) : s.y0 + ' to ' + s.y1), el('span', null, String(Y1)));
     box.append(bar, ax);
     if (s.note) box.append(el('div', null, s.note));
+    const w = webOf(s);
+    if (w) { const a = el('a', 'web', w[2] + ' ↗'); a.href = w[1]; a.target = '_blank'; a.rel = 'noopener'; box.append(a); }
     box.append(el('div', 'file', 'Where we hold it: ' + s.f));
     out.push(box);
   });
-  const DASHES = { 3: ['index.html', 'seizures dashboard'], 2: ['labs.html', 'labs dashboard'] };
-  if (DASHES[i] && d.src.length) {
-    const a = el('a', 'toDash', 'Compare these sources year by year in the ' + DASHES[i][1]);
-    a.href = DASHES[i][0];
-    out.push(a);
-  }
   panel.replaceChildren(...out);
   if (scroll) panel.scrollIntoView({ block: 'nearest', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }

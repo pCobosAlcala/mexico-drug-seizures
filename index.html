@@ -35,7 +35,7 @@ window.dash = (function () {
     const load = (id, url) => d3.csv(url).then(
       rows => { store[id] = { status: 'ok', data: rows }; },
       err => { store[id] = { status: 'error', data: [] }; console.error(url, err); });
-    Promise.all([load('seizures', 'data/dash_seizures.csv'), load('sources', 'data/dash_sources.csv')]).then(api.all);
+    Promise.all([load('seizures', 'data/dash_seizures.csv?v=2026-11-16'), load('sources', 'data/dash_sources.csv?v=2026-11-16')]).then(api.all);
     const chart = document.getElementById('chart');
     let lastW = chart ? chart.clientWidth : 0, timer = null;
     window.addEventListener('resize', () => {
@@ -172,7 +172,7 @@ window.dash = (function () {
     <div class="mx-legend" id="legend" data-draw="legend" data-source="sources" aria-label="Lines shown; click to hide or show"></div>
     <div class="mx-chart" id="chart" data-draw="chart" data-source="seizures sources"></div>
     <p class="mx-caption">Shaded: López Obrador's term, December 2018 to September 2024. Hollow points: a year the source covers only in part. Click a name above to hide or show its line; point at the chart to read the values.</p>
-    <p class="mx-flagnote" id="flag-note" hidden>Left out of the chart: the FGR fentanyl file reports 66,807 kg in Mexico City and 6,080 kg in Baja California for 2020, about 60 times the country's yearly fentanyl seizures in every other source, so it is most likely a unit error at the source. The table still shows it, marked.</p>
+    <p class="mx-flagnote" id="flag-note" hidden></p>
     <span data-draw="flag-toggle" hidden></span>
   </section>
 
@@ -199,6 +199,7 @@ window.dash = (function () {
     <p>Kilograms, pills and ampoules are separate series and are never added. Tons, grams and milligrams were converted to kilograms. Cannabis plants are kept apart from marijuana.</p>
     <p>Download the data: <a href="data/dash_seizures.csv">dash_seizures.csv</a> (one row per source, agency, place, year, drug and unit) and <a href="data/dash_sources.csv">dash_sources.csv</a> (one row per source, with its years, detail and notes).</p>
     <p>Known gaps: the navy and Guardia Nacional answers stop in 2022 and 2021; after that the Guardia Nacional appears only in INEGI's police census. The INEGI prosecutor census has no table for 2020 and 2021. SEDENA's yearly public sheets count marijuana seized plus incinerated, so they run well above the register. The Informe annex and GI-TOC tables cover January to June of 2024 only.</p>
+    <p>Checks: a sample of values was recounted independently from the raw files and matched. INEGI's census tables (police and prosecutors) hold some values that cannot be right, such as one state's police seizing more than every other source reports for the whole country, or tonnes of LSD; these are kept in the table, marked, and left out of the chart. Census figures are lumpy by state, and some states seem to switch units between years (Quintana Roo from 2023), so read state police figures with care.</p>
   </details>
 </div>
 
@@ -219,6 +220,14 @@ window.MX_LABELS = {
 window.MX_AMLO = { from: 2018.92, to: 2024.75, firstYear: 2019, lastYear: 2024 };
 // What the reader picked; changed only by the controls
 window.MX_STATE = window.MX_STATE || { view: 'agency', register: 'army', drug: 'fentanyl', unit: 'kg', place: '00', scale: 'linear', off: {} };
+// A link can open the page on a view, agency, drug, unit or place: ?view=versions&register=army
+(function () {
+  try {
+    const q = new URLSearchParams(window.location.search);
+    ['view', 'register', 'drug', 'unit', 'place'].forEach(k => { const v = q.get(k); if (v) window.MX_STATE[k] = v; });
+    if (!['agency', 'versions'].includes(window.MX_STATE.view)) window.MX_STATE.view = 'agency';
+  } catch (e) { /* no query string support: keep the defaults */ }
+})();
 </script>
 
 <script>
@@ -300,6 +309,10 @@ window.mxRedraw = function () {
   ['register-select', 'unit-select', 'place-select', 'legend', 'chart', 'table', 'flag-toggle', 'sel-text'].forEach(n => dash.draw(n));
 };
 
+// Show the agency selector and the right help text for the view the page opens on
+document.querySelectorAll('#field-register').forEach(el => { el.hidden = window.MX_STATE.view !== 'versions'; });
+document.querySelectorAll('#help-agency').forEach(el => { el.hidden = window.MX_STATE.view !== 'agency'; });
+document.querySelectorAll('#help-versions').forEach(el => { el.hidden = window.MX_STATE.view !== 'versions'; });
 // The view buttons, scale and years have fixed choices written in the HTML; scripts only listen
 document.querySelectorAll('[data-view]').forEach(btn => {
   btn.setAttribute('aria-pressed', String(btn.getAttribute('data-view') === window.MX_STATE.view));
@@ -379,11 +392,17 @@ dash.draw('legend', box => {
   }));
 });
 
-// Shows the flag note only when a flagged value is in the current selection
+// Explains the values left out of the chart, only when the selection has any
 dash.draw('flag-toggle', el => {
-  const ls = window.MX.shown();
-  const has = !!ls && ls.some(l => l.points.some(p => p.flag));
-  document.querySelectorAll('#flag-note').forEach(n => { n.hidden = !has; });
+  const ls = window.MX.shown() || [];
+  const items = [];
+  ls.forEach(l => l.points.forEach(p => { if (p.flag) items.push(l.name + ', ' + p.year + ': ' + p.flag + '.'); }));
+  document.querySelectorAll('#flag-note').forEach(n => {
+    n.hidden = !items.length;
+    n.textContent = items.length
+      ? 'Left out of the chart as likely errors at the source; the table still shows them, marked. ' + items.slice(0, 5).join(' ') + (items.length > 5 ? ' And ' + (items.length - 5) + ' more, marked in the table.' : '')
+      : '';
+  });
 });
 </script>
 
