@@ -36,7 +36,7 @@ window.dash = (function () {
     const load = (id, url) => d3.csv(url).then(
       rows => { store[id] = { status: 'ok', data: rows }; },
       err => { store[id] = { status: 'error', data: [] }; console.error(url, err); });
-    Promise.all([load('seizures', 'data/precursors.csv?v=2026-11-16'), load('sources', 'data/precursors_sources.csv?v=2026-11-16'), load('chems', 'data/precursor_chemicals.csv?v=2026-11-16b')]).then(api.all);
+    Promise.all([load('seizures', 'data/precursors.csv?v=2026-11-16c'), load('sources', 'data/precursors_sources.csv?v=2026-11-16'), load('chems', 'data/precursor_chemicals.csv?v=2026-11-16c')]).then(api.all);
     const chart = document.getElementById('chart');
     let lastW = chart ? chart.clientWidth : 0, timer = null;
     window.addEventListener('resize', () => {
@@ -52,9 +52,12 @@ window.dash = (function () {
 <div class="site-wrap">
 <nav class="site-nav" aria-label="Pages">
   <a class="site-name" href="index.html">Mexico drug supply data</a>
-  <a class="tab" href="index.html">Seizures by source</a>
-  <a class="tab" href="labs.html">Labs by source</a>
-  <a class="tab" href="precursors.html" aria-current="page">Precursors by source</a>
+  <a class="tab" href="index.html">Seizures</a>
+  <a class="tab" href="labs.html">Labs</a>
+  <a class="tab" href="precursors.html" aria-current="page">Precursors</a>
+  <a class="tab" href="eradication.html">Eradication</a>
+  <a class="tab" href="incineration.html">Incineration</a>
+  <a class="tab" href="airstrips.html">Airstrips</a>
   <a class="tab" href="matrix.html">What data exists</a>
 </nav>
 <main>
@@ -214,7 +217,7 @@ window.dash = (function () {
     <summary>How to read the sources</summary>
     <p>We hold two precursor sources. The army's (SEDENA) records list each chemical it seized by municipality and month, 2011 to 2024; they came with Alejandro's data and the transparency release behind them is not identified. The federal prosecutors' (FGR) rows list fentanyl chemicals by state and year, 2017 to 2023, from Alejandro's state file; their source is not identified either. No other table we hold (navy, Federal Police and Guardia Nacional answers, INEGI censuses, the Informe annexes, UNODC) reports precursor seizures by chemical.</p>
     <p>Kilograms and litres are separate series and are never added or converted. The sum for a drug adds the chemicals of that drug in the same unit; it is a weight or a volume of chemicals, not of drug.</p>
-    <p>Known overlaps and gaps: in Sinaloa in 2022 the FGR shows 855 kg of ANPP and the army 855 litres in Culiacán, probably one seizure counted by both. The army's records are thin in 2019 (17) and 2020 (13) and many in 2023 (414). In 2011 single records are very large (787,000 kg of phenylbutyronitrile in one record).</p>
+    <p>Known overlaps and gaps: in Sinaloa in 2022 the FGR shows 855 kg of ANPP and the army 855 litres in Culiacán, probably one seizure counted by both. The army's records are thin in 2019 (17) and 2020 (13) and many in 2023 (414). One seizure is counted twice: a Querétaro warehouse in July 2011 appears as SEDENA's first count (787,000 kg, printed as phenylbutyronitrile; SEDENA's press release calls it 787 tonnes of phenylacetamide) and as the revised count (300,000 kg of 2-phenylacetamide). The first count is shown in the table, marked, and left out of the chart and of every total. That warehouse is still the largest precursor seizure in the records.</p>
     <p>Download the data: <a href="data/precursors.csv">precursors.csv</a> (one row per source, agency, place, year, chemical or drug group, and unit), <a href="data/precursor_chemicals.csv">precursor_chemicals.csv</a> (the chemical list) and <a href="data/precursors_sources.csv">precursors_sources.csv</a>.</p>
   </details>
 </div>

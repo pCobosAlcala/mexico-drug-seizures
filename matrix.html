@@ -52,16 +52,19 @@ a.cell { text-decoration: none; }
 <div class="site-wrap">
 <nav class="site-nav" aria-label="Pages">
   <a class="site-name" href="index.html">Mexico drug supply data</a>
-  <a class="tab" href="index.html">Seizures by source</a>
-  <a class="tab" href="labs.html">Labs by source</a>
-  <a class="tab" href="precursors.html">Precursors by source</a>
+  <a class="tab" href="index.html">Seizures</a>
+  <a class="tab" href="labs.html">Labs</a>
+  <a class="tab" href="precursors.html">Precursors</a>
+  <a class="tab" href="eradication.html">Eradication</a>
+  <a class="tab" href="incineration.html">Incineration</a>
+  <a class="tab" href="airstrips.html">Airstrips</a>
   <a class="tab" href="matrix.html" aria-current="page">What data exists</a>
 </nav>
 <main>
   <header>
     <h1 class="pg-title">What data exists</h1>
     <p class="pg-intro">The data we hold on how Mexico enforces against drug supply, from precursor chemicals to arrests, by agency. The color of each cell shows the most detailed source we hold for it. Click a cell marked ↗ to open its dashboard on that agency; in a row marked pending, click a cell to see every source behind it, the years it covers and its caveats.</p>
-    <p class="pg-intro"><b>Precursors</b>, <b>labs</b> and <b>drugs seized</b> are the rows worked through so far: their sources are harmonized and compared in the <a href="precursors.html">precursors</a>, <a href="labs.html">labs</a> and <a href="index.html">seizures</a> dashboards. The other rows are an inventory of files we hold, not yet harmonized.</p>
+    <p class="pg-intro">Every row except <b>arrests</b> has its own dashboard, where the sources are harmonized and compared: <a href="precursors.html">precursors</a>, <a href="eradication.html">eradication</a>, <a href="labs.html">labs</a>, <a href="index.html">seizures</a>, <a href="incineration.html">incineration</a> and <a href="airstrips.html">airstrips</a>. Arrests is pending: an inventory of the files we hold.</p>
   </header>
 
   <div class="lgd" aria-label="Legend">
@@ -131,7 +134,7 @@ const D = {
   S('Guardia Nacional answer, folio 332259822000079, Anexo I', 2019, 2021, 'Municipality, month', 'Plots of marijuana and poppy', '.../332259822000079_GN/Anexo I', 'July 2019 to December 2021: 26 marijuana and 4 poppy plots.'),
   S('Guardia Nacional answer, Anexo II', 2020, 2021, 'State, month', 'Plots and hectares', '.../332259822000079_GN/Anexo II', 'Small hand-made tables.')] },
 '1,3': { s: 'coarse', l: 'State, yearly', src: [
-  S('INEGI federal prosecutor census (CNPJF)', 2016, 2024, 'State; municipality from 2022', 'Plots and hectares, marijuana and poppy', 'bases/peter_mexico_drugs/raw/inegi_cnpjf', 'Data year is the census edition minus one.'),
+  S('INEGI federal prosecutor census (CNPJF)', 2016, 2024, 'State, year; national only in some years', 'Plots and hectares, marijuana and poppy', 'bases/peter_mexico_drugs/raw/inegi_cnpjf', 'Not the FGR' + "'" + 's own work: it repeats the national total of all federal agencies (Esfuerzo Nacional). Shown as comparison only.'),
   S('FGR CENAPI answer, folio 0001700006421', 2000, 2020, 'State, year', 'Hectares; all agencies pooled', '.../0001700006421_FGR/Anexo 6421.pdf', 'Scanned; needs text recognition.')] },
 '1,4': N(),
 '1,5': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, Esfuerzo Nacional', 2005, 2024, 'National, year', 'Hectares of marijuana and poppy', 'informes_gobierno (6th Informe, page 691)', '2024 is January to June.')] },
@@ -193,7 +196,7 @@ const D = {
   S('SEDENA yearly public sheets', 2014, 2026, 'National, year', 'Count (17 in 2025)', 'sedena_operaciones_narcotrafico', '')] },
 '5,1': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, SEMAR table', 2005, 2024, 'National, year', 'Count', 'informes_gobierno (page 692)', '')] },
 '5,2': N(),
-'5,3': { s: 'coarse', l: 'State, yearly', src: [S('INEGI federal prosecutor census (CNPJF)', 2016, 2024, 'State, year', 'Count', 'inegi_cnpjf', '')] },
+'5,3': { s: 'coarse', l: 'State, yearly', src: [S('INEGI federal prosecutor census (CNPJF)', 2015, 2024, 'State, year', 'Count', 'bases/peter_mexico_drugs/raw/inegi_cnpjf', 'States add up to the national totals printed in the 2017 to 2019 editions.')] },
 '5,4': N(), '5,5': N(),
 
 
@@ -223,6 +226,9 @@ const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls)
 const webOf = s => window.mxWebOf(s.n + ' ' + s.f);
 // Dashboards for the rows already harmonized, and the agency each column opens on
 const DASHES = { 0: ['precursors.html', 'precursors dashboard', ['army', null, null, 'fgr', null, null]],
+                 1: ['eradication.html', 'eradication dashboard', ['army', 'navy', 'federal_police_gn', 'totals', null, 'totals']],
+                 4: ['incineration.html', 'incineration dashboard', ['army', null, null, null, null, null]],
+                 5: ['airstrips.html', 'airstrips dashboard', ['army', 'navy', null, 'fgr', null, null]],
                  3: ['index.html', 'seizures dashboard', ['army', 'navy', 'federal_police_gn', 'fgr', 'state_police', 'totals']],
                  2: ['labs.html', 'labs dashboard', ['army', null, 'federal_police_gn', 'fgr', 'state_police', 'totals']] };
 
