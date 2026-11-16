@@ -6,6 +6,7 @@
 <title>Mexico drug labs</title>
 <meta name="description" content="How many clandestine drug labs Mexican agencies say they found each year, from every government source we hold, compared side by side.">
 <link rel="stylesheet" href="site.css">
+<script src="web.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
 // A small stand-in for the dashboard runtime: loads the two CSVs, keeps the
@@ -583,6 +584,13 @@ dash.draw('coverage', box => {
       add('Most detailed level', s.finest, 'finest');
       add('Drug produced', s.products ? String(s.products).split(', ').map(d => L.drug[d] || d).join(', ') : 'Not recorded');
       add('Notes', s.note, 'note');
+      const web = window.mxWebOf && window.mxWebOf([s.label, s.short, s.where_held].join(' '));
+      if (web) {
+        const dt = document.createElement('dt'); dt.textContent = 'Website';
+        const dd = document.createElement('dd'); const a = document.createElement('a');
+        a.href = web[1]; a.target = '_blank'; a.rel = 'noopener'; a.textContent = web[2] + ' ↗';
+        dd.append(a); dl.append(dt, dd);
+      }
       add('Where we hold it', s.where_held, 'where_held');
       det.append(sum, dl);
       sec.append(det);

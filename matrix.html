@@ -6,6 +6,7 @@
 <title>What data exists</title>
 <meta name="description" content="The data we hold on Mexico's enforcement against drug supply, from precursor chemicals to arrests, by stage and agency.">
 <link rel="stylesheet" href="site.css">
+<script src="web.js"></script>
 <style>
 .pg-title { font-family: var(--font-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
 .pg-intro { margin: 8px 0 0; max-width: 72ch; line-height: 1.55; color: var(--color-fg-muted); }
@@ -18,6 +19,9 @@
 .mtx .r { color: var(--color-fg); font-weight: 600; padding: 6px 6px 6px 0; display: flex; align-items: center; position: sticky; left: 0; background: var(--color-bg); z-index: 1; }
 .cell { font: inherit; font-size: 12.5px; border-radius: 6px; padding: 6px 4px; text-align: center; cursor: pointer; border: 1px solid transparent; line-height: 1.3; min-height: 40px; display: flex; align-items: center; justify-content: center; }
 .cell:hover { border-color: var(--color-fg-muted); }
+a.cell { text-decoration: none; }
+.cell.pending { background-image: repeating-linear-gradient(135deg, transparent 0 7px, color-mix(in srgb, var(--color-fg-muted) 14%, transparent) 7px 9px); }
+.pend { margin-left: 8px; font-size: 11px; font-weight: 400; color: var(--color-fg-muted); border: 1px dashed var(--color-fg-muted); border-radius: 999px; padding: 0 7px; }
 .cell:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 1px; }
 .cell[aria-pressed="true"] { outline: 2px solid var(--color-fg); outline-offset: 1px; }
 .fine { background: var(--lvl-fine-bg); color: var(--lvl-fine-fg); }
@@ -56,7 +60,7 @@
 <main>
   <header>
     <h1 class="pg-title">What data exists</h1>
-    <p class="pg-intro">The data we hold on how Mexico enforces against drug supply, from precursor chemicals to arrests, by agency. The color of each cell shows the most detailed source we hold for it. Click a cell to see every source behind it, the years it covers, how detailed it is and its caveats.</p>
+    <p class="pg-intro">The data we hold on how Mexico enforces against drug supply, from precursor chemicals to arrests, by agency. The color of each cell shows the most detailed source we hold for it. Click a cell marked ↗ to open its dashboard on that agency; in a row marked pending, click a cell to see every source behind it, the years it covers and its caveats.</p>
     <p class="pg-intro"><b>Precursors</b>, <b>labs</b> and <b>drugs seized</b> are the rows worked through so far: their sources are harmonized and compared in the <a href="precursors.html">precursors</a>, <a href="labs.html">labs</a> and <a href="index.html">seizures</a> dashboards. The other rows are an inventory of files we hold, not yet harmonized.</p>
   </header>
 
@@ -65,6 +69,8 @@
     <span><span class="k coarse"></span>Held, state or national</span>
     <span><span class="k part"></span>Partial: a short window, a proxy, or press only</span>
     <span><span class="k none"></span>Nothing held</span>
+    <span>↗ Opens the dashboard</span>
+    <span><span class="pend" style="margin-left:0">pending</span> No dashboard yet: click a cell for the sources we hold</span>
   </div>
 
   <div class="mtx-scroll">
@@ -101,7 +107,7 @@
 <script>
 // Columns (agencies) and rows (stages of enforcement)
 const C = ['SEDENA (army)', 'SEMAR (navy)', 'Federal Police and Guardia Nacional', 'FGR (federal prosecutors)', 'State level', 'All agencies pooled'];
-const R = ['Precursors', 'Eradication', 'Labs', 'Drugs seized', 'Incineration', 'Airstrips', 'Customs and ports', 'Arrests'];
+const R = ['Precursors', 'Eradication', 'Labs', 'Drugs seized', 'Incineration', 'Airstrips', 'Arrests'];
 const SEIZED_ROW = 3;
 // One source: name, first and last year, finest level, what it measures, our copy, note
 const S = (n, y0, y1, g, d, f, note) => ({ n, y0, y1, g, d, f, note });
@@ -190,25 +196,21 @@ const D = {
 '5,3': { s: 'coarse', l: 'State, yearly', src: [S('INEGI federal prosecutor census (CNPJF)', 2016, 2024, 'State, year', 'Count', 'inegi_cnpjf', '')] },
 '5,4': N(), '5,5': N(),
 
-'6,0': N(),
-'6,1': { s: 'part', l: 'Port proxy', src: [S('SEMAR seizure events in port municipalities', 2006, 2022, 'Municipality, day', 'Events in Manzanillo, Lázaro Cárdenas and other ports', '.../330026623000117_SEMAR/ANEXO 1.xlsx', 'A proxy, not customs data.')] },
-'6,2': N(), '6,3': N(), '6,4': N(),
-'6,5': N('No customs agency (ANAM) series exists. Not held: INCB precursor seizures, legal chemical imports (trade data). COFEPRIS import permits need a transparency request.'),
 
-'7,0': { s: 'coarse', l: 'National, yearly', src: [
+'6,0': { s: 'coarse', l: 'National, yearly', src: [
   S('Informe de Gobierno annex, SEDENA table', 2005, 2024, 'National, year', 'Drug crimes and firearms law', 'informes_gobierno (page 692)', ''),
   S('SEDENA yearly public sheets', 2014, 2026, 'National, year', 'All crimes', 'sedena_operaciones_narcotrafico', '')] },
-'7,1': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, SEMAR table', 2005, 2024, 'National, year', 'Drug and related crimes', 'informes_gobierno (page 692)', '')] },
-'7,2': { s: 'coarse', l: 'National', src: [S('INEGI federal police census, people handed over', 2019, 2025, 'Guardia Nacional national total', 'By crime type', 'bases/detenciones_mx', 'Counts crimes, not people.')] },
-'7,3': { s: 'coarse', l: 'State; windows', src: [
+'6,1': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, SEMAR table', 2005, 2024, 'National, year', 'Drug and related crimes', 'informes_gobierno (page 692)', '')] },
+'6,2': { s: 'coarse', l: 'National', src: [S('INEGI federal police census, people handed over', 2019, 2025, 'Guardia Nacional national total', 'By crime type', 'bases/detenciones_mx', 'Counts crimes, not people.')] },
+'6,3': { s: 'coarse', l: 'State; windows', src: [
   S('INEGI federal prosecutor census, drug detainees', 2016, 2024, 'State, year', 'Drug crimes; no substance, no arresting agency', 'inegi_cnpjf', ''),
   S('PGR detainees by arresting agency (window)', 2015, 2016, 'State, month', 'All federal crimes, drug subtypes; names the agency', 'bases/peter_mexico_drugs/raw/pgr_detenidos_datamx', 'October 2015 to October 2016.'),
   S('FGR case files opened with a detainee (window)', 2017, 2019, 'FGR office, month', 'By crime', 'bases/peter_mexico_drugs/raw/fgr_opendata_archived', 'December 2017 missing.'),
   S('FGR seizure events with detainees (window)', 2019, 2019, 'Event', '66 events, 54 detainees', 'fgr_opendata_archived/NARCOTICOSEIDF.csv', 'January to August 2019.')] },
-'7,4': { s: 'coarse', l: 'State, yearly', src: [
+'6,4': { s: 'coarse', l: 'State, yearly', src: [
   S('INEGI state police census, people handed over', 2017, 2025, 'State, year', 'By crime: simple possession, possession for sale, trade, supply', 'bases/detenciones_mx', 'Counts crimes, not people; break in 2020.'),
   S('INEGI state prosecutor census, small-scale dealing (narcomenudeo)', 2017, 2024, 'State, year', 'People and crimes by drug and quantity range', 'code/2026/peter/data/inegi', '')] },
-'7,5': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, Esfuerzo Nacional', 2005, 2024, 'National, year', 'Drug and related federal crimes', 'informes_gobierno (page 691)', 'All federal agencies pooled.')] }
+'6,5': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, Esfuerzo Nacional', 2005, 2024, 'National, year', 'Drug and related federal crimes', 'informes_gobierno (page 691)', 'All federal agencies pooled.')] }
 };
 
 const Y0 = 1990, Y1 = 2026;
@@ -216,43 +218,39 @@ const pct = y => ((y - Y0) / (Y1 - Y0 + 1)) * 100;
 const AMLO = { from: 2018.92, to: 2024.75 };
 const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; };
 
-// The grid
-const mtx = document.getElementById('mtx'), panel = document.getElementById('panel');
-mtx.append(el('div'));
-C.forEach(c => mtx.append(el('div', 'h', c)));
-R.forEach((r, i) => {
-  mtx.append(el('div', 'r', r));
-  C.forEach((c, j) => {
-    const d = D[i + ',' + j];
-    const b = el('button', 'cell ' + d.s, d.l);
-    b.type = 'button';
-    b.dataset.k = i + ',' + j;
-    b.setAttribute('aria-pressed', 'false');
-    b.setAttribute('aria-label', r + ', ' + c + ': ' + d.l);
-    mtx.append(b);
-  });
-});
 
-// Where each source can be found online (links checked 16 Nov 2026); matched on its name and file
-const WEB = [
-  [/330026423000179|330026623000117|0413100015520|332259822000079|0001700006421/, 'https://www.mucd.org.mx/wp-content/uploads/2023/06/Respuestas_autoridades.zip', 'Transparency answers, published by MUCD (zip file)'],
-  [/GI-TOC/, 'https://page.globalinitiative.net/fentanyl-and-synthetic-drugs-monitor-1/', 'GI-TOC Fentanyl and Synthetic Drugs Monitor'],
-  [/Quinto Elemento/, 'https://public.flourish.studio/visualisation/17111975/', 'Quinto Elemento Lab map'],
-  [/yearly public sheets/, 'https://www.gob.mx/defensa/acciones-y-programas/operaciones-contra-el-narcotrafico-6963', 'SEDENA, Operaciones contra el narcotráfico'],
-  [/CNPJF|federal prosecutor census|INEGI prosecutor census/, 'https://www.inegi.org.mx/programas/cnpjf/2025/', 'INEGI federal prosecutor census'],
-  [/CNSPF|federal police census/, 'https://www.inegi.org.mx/programas/cnspf/', 'INEGI federal police census'],
-  [/CNSPE|state police census/, 'https://www.inegi.org.mx/programas/cnspe/', 'INEGI state police census'],
-  [/CNPJE|state prosecutor census/, 'https://www.inegi.org.mx/programas/cnpje/', 'INEGI state prosecutor census'],
-  [/UNODC/, 'https://www.unodc.org/unodc/en/data-and-analysis/world-drug-report-2026.html', 'UNODC World Drug Report 2026'],
-  [/InSight Crime/, 'https://insightcrime.org/', 'InSight Crime (site home; the article is not linked)']
-];
-const webOf = s => WEB.find(w => w[0].test(s.n + ' ' + s.f));
+// Website of a source, from the shared list in web.js
+const webOf = s => window.mxWebOf(s.n + ' ' + s.f);
 // Dashboards for the rows already harmonized, and the agency each column opens on
 const DASHES = { 0: ['precursors.html', 'precursors dashboard', ['army', null, null, 'fgr', null, null]],
                  3: ['index.html', 'seizures dashboard', ['army', 'navy', 'federal_police_gn', 'fgr', 'state_police', 'totals']],
                  2: ['labs.html', 'labs dashboard', ['army', null, 'federal_police_gn', 'fgr', 'state_police', 'totals']] };
 
-// The detail panel for one cell
+// The grid. Rows with a dashboard: a cell opens it on that agency. Pending rows: a cell shows the sources we hold.
+const mtx = document.getElementById('mtx'), panel = document.getElementById('panel');
+const cellUrl = (i, j) => {
+  const dsh = DASHES[i]; if (!dsh) return null;
+  const reg = dsh[2][j]; if (!reg || D[i + ',' + j].s === 'none') return null;
+  return dsh[0] + '?view=versions&register=' + reg;
+};
+mtx.append(el('div'));
+C.forEach(c => mtx.append(el('div', 'h', c)));
+R.forEach((r, i) => {
+  const done = !!DASHES[i];
+  const rl = el('div', 'r', r);
+  if (!done) rl.append(el('span', 'pend', 'pending'));
+  mtx.append(rl);
+  C.forEach((c, j) => {
+    const d = D[i + ',' + j], url = cellUrl(i, j);
+    const b = el(url ? 'a' : 'button', 'cell ' + d.s + (done ? '' : ' pending'), d.l + (url ? ' ↗' : ''));
+    b.dataset.k = i + ',' + j;
+    if (url) { b.href = url; b.title = 'Open in the ' + DASHES[i][1]; b.setAttribute('aria-label', r + ', ' + c + ': ' + d.l + '. Open in the ' + DASHES[i][1]); }
+    else { b.type = 'button'; b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', r + ', ' + c + ': ' + d.l + (done ? '' : ', pending')); }
+    mtx.append(b);
+  });
+});
+
+// The detail panel for one cell (pending rows, and cells with no dashboard line)
 function show(k, scroll) {
   mtx.querySelectorAll('.cell').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.k === k)));
   const [i, j] = k.split(',').map(Number), d = D[k];
@@ -284,8 +282,8 @@ function show(k, scroll) {
   panel.replaceChildren(...out);
   if (scroll) panel.scrollIntoView({ block: 'nearest', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }
-mtx.addEventListener('click', e => { const c = e.target.closest('.cell'); if (c) show(c.dataset.k, true); });
-show(SEIZED_ROW + ',0', false);
+mtx.addEventListener('click', e => { const c = e.target.closest('button.cell'); if (c) show(c.dataset.k, true); });
+panel.append(el('p', 'lead', 'Click a cell marked ↗ to open its dashboard on that agency. In a pending row, click a cell to see the sources we hold.'));
 </script>
 </body>
 </html>
