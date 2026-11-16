@@ -35,7 +35,7 @@ window.dash = (function () {
     const load = (id, url) => d3.csv(url).then(
       rows => { store[id] = { status: 'ok', data: rows }; },
       err => { store[id] = { status: 'error', data: [] }; console.error(url, err); });
-    Promise.all([load('seizures', 'data/precursors.csv?v=2026-11-16'), load('sources', 'data/precursors_sources.csv?v=2026-11-16'), load('chems', 'data/precursor_chemicals.csv?v=2026-11-16')]).then(api.all);
+    Promise.all([load('seizures', 'data/precursors.csv?v=2026-11-16'), load('sources', 'data/precursors_sources.csv?v=2026-11-16'), load('chems', 'data/precursor_chemicals.csv?v=2026-11-16b')]).then(api.all);
     const chart = document.getElementById('chart');
     let lastW = chart ? chart.clientWidth : 0, timer = null;
     window.addEventListener('resize', () => {
@@ -205,6 +205,7 @@ window.dash = (function () {
   <section id="chem-sec" aria-labelledby="chem-title">
     <h2 class="mx-h2" id="chem-title">Which chemical goes with which drug</h2>
     <p class="mx-caption">Every chemical in our files, grouped by the drug it is used to make. Main precursor: the chemical that becomes the drug. Used to make the precursor: one step earlier. Reagent: helps the reaction but does not become the drug. Solvents and general reagents are used in labs of every kind and in legal industry, so they say little about which drug was made; they are folded below.</p>
+    <p class="mx-caption">Control status. International: Table I (precursors) or Table II (essential chemicals) of the 1988 UN Convention, from the <a href="https://www.incb.org/incb/uploads/documents/PRECURSORS/RED_LIST/RED_LIST_E.pdf">INCB Red List, July 2025</a>; "watch list" is INCB's special surveillance list of chemicals not under control, which is not public, so it is taken from INCB's yearly reports. Mexico: the <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFCPQ.pdf">Ley Federal para el Control de Precursores Químicos</a>, article 4, last reformed 3 May 2023: group I precursors and group II essential chemicals. Mexico controls some chemicals INCB does not (methylamine, benzyl chloride), and does not name some that INCB added recently (1-boc-4-AP, norfentanyl).</p>
     <div class="pc-groups" data-draw="chem-table" data-source="chems"></div>
   </section>
 
@@ -572,11 +573,11 @@ dash.draw('chem-table', box => {
     const wrap = document.createElement('div'); wrap.className = 'pc-wrap';
     const t = document.createElement('table'); t.className = 'pc-table';
     const hr = t.createTHead().insertRow();
-    ['Chemical', 'Role', 'What it is for', 'Printed in the source as', 'What we hold'].forEach(h => { const th = document.createElement('th'); th.textContent = h; hr.append(th); });
+    ['Chemical', 'Role', 'What it is for', 'International control (INCB)', 'Mexican law', 'Printed in the source as', 'What we hold'].forEach(h => { const th = document.createElement('th'); th.textContent = h; hr.append(th); });
     const tb = t.createTBody();
     chems.forEach(c => {
       const tr = tb.insertRow();
-      [[c.chemical, 'pc-name'], [c.role, ''], [c.note, ''], [c.printed_as, ''], [c.held || 'Nothing', 'pc-held']].forEach(([v, cls]) => { const td = tr.insertCell(); td.textContent = v; if (cls) td.className = cls; });
+      [[c.chemical, 'pc-name'], [c.role, ''], [c.note, ''], [c.incb, ''], [c.mexico_law, ''], [c.printed_as, ''], [c.held || 'Nothing', 'pc-held']].forEach(([v, cls]) => { const td = tr.insertCell(); td.textContent = v; if (cls) td.className = cls; });
     });
     wrap.append(t); det.append(sum, wrap);
     return det;
