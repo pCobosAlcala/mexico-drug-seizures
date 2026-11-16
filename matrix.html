@@ -19,7 +19,8 @@
 .mtx .r { color: var(--color-fg); font-weight: 600; padding: 6px 6px 6px 0; display: flex; align-items: center; position: sticky; left: 0; background: var(--color-bg); z-index: 1; }
 .cell { font: inherit; font-size: 12.5px; border-radius: 6px; padding: 6px 4px; text-align: center; cursor: pointer; border: 1px solid transparent; line-height: 1.3; min-height: 40px; display: flex; align-items: center; justify-content: center; }
 .cell:hover { border-color: var(--color-fg-muted); }
-a.cell { text-decoration: none; }
+.mtx .r a.rowlink { color: inherit; text-decoration: none; border-bottom: 1px solid var(--color-fg-muted); }
+.mtx .r a.rowlink:hover { border-bottom-color: var(--color-fg); }
 .cell.pending { background-image: repeating-linear-gradient(135deg, transparent 0 7px, color-mix(in srgb, var(--color-fg-muted) 14%, transparent) 7px 9px); }
 .pend { margin-left: 8px; font-size: 11px; font-weight: 400; color: var(--color-fg-muted); border: 1px dashed var(--color-fg-muted); border-radius: 999px; padding: 0 7px; }
 .cell:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 1px; }
@@ -63,7 +64,7 @@ a.cell { text-decoration: none; }
 <main>
   <header>
     <h1 class="pg-title">What data exists</h1>
-    <p class="pg-intro">The data we hold on how Mexico enforces against drug supply, from precursor chemicals to arrests, by agency. The color of each cell shows the most detailed source we hold for it. Click a cell marked ↗ to open its dashboard on that agency; in a row marked pending, click a cell to see every source behind it, the years it covers and its caveats.</p>
+    <p class="pg-intro">The data we hold on how Mexico enforces against drug supply, from precursor chemicals to arrests, by agency. The color of each cell shows the most detailed source we hold for it. Click a row name marked ↗ to open its dashboard. Click a cell to see every source behind it, the years it covers, how detailed it is, its caveats and its website.</p>
     <p class="pg-intro">Every row except <b>arrests</b> has its own dashboard, where the sources are harmonized and compared: <a href="precursors.html">precursors</a>, <a href="eradication.html">eradication</a>, <a href="labs.html">labs</a>, <a href="index.html">seizures</a>, <a href="incineration.html">incineration</a> and <a href="airstrips.html">airstrips</a>. Arrests is pending: an inventory of the files we hold.</p>
   </header>
 
@@ -72,7 +73,7 @@ a.cell { text-decoration: none; }
     <span><span class="k coarse"></span>Held, state or national</span>
     <span><span class="k part"></span>Partial: a short window, a proxy, or press only</span>
     <span><span class="k none"></span>Nothing held</span>
-    <span>↗ Opens the dashboard</span>
+    <span>Row name ↗: opens the dashboard</span>
     <span><span class="pend" style="margin-left:0">pending</span> No dashboard yet: click a cell for the sources we hold</span>
   </div>
 
@@ -232,31 +233,34 @@ const DASHES = { 0: ['precursors.html', 'precursors dashboard', ['army', null, n
                  3: ['index.html', 'seizures dashboard', ['army', 'navy', 'federal_police_gn', 'fgr', 'state_police', 'totals']],
                  2: ['labs.html', 'labs dashboard', ['army', null, 'federal_police_gn', 'fgr', 'state_police', 'totals']] };
 
-// The grid. Rows with a dashboard: a cell opens it on that agency. Pending rows: a cell shows the sources we hold.
+// The grid. A row name with a dashboard links to it; a pending row is marked.
+// Every cell opens the panel below with the sources behind it.
 const mtx = document.getElementById('mtx'), panel = document.getElementById('panel');
-const cellUrl = (i, j) => {
-  const dsh = DASHES[i]; if (!dsh) return null;
-  const reg = dsh[2][j]; if (!reg || D[i + ',' + j].s === 'none') return null;
-  return dsh[0] + '?view=versions&register=' + reg;
-};
 mtx.append(el('div'));
 C.forEach(c => mtx.append(el('div', 'h', c)));
 R.forEach((r, i) => {
   const done = !!DASHES[i];
-  const rl = el('div', 'r', r);
-  if (!done) rl.append(el('span', 'pend', 'pending'));
+  const rl = el('div', 'r');
+  if (done) {
+    const a = el('a', 'rowlink', r + ' ↗');
+    a.href = DASHES[i][0]; a.title = 'Open the ' + DASHES[i][1];
+    rl.append(a);
+  } else {
+    rl.append(document.createTextNode(r), el('span', 'pend', 'pending'));
+  }
   mtx.append(rl);
   C.forEach((c, j) => {
-    const d = D[i + ',' + j], url = cellUrl(i, j);
-    const b = el(url ? 'a' : 'button', 'cell ' + d.s + (done ? '' : ' pending'), d.l + (url ? ' ↗' : ''));
+    const d = D[i + ',' + j];
+    const b = el('button', 'cell ' + d.s + (done ? '' : ' pending'), d.l);
+    b.type = 'button';
     b.dataset.k = i + ',' + j;
-    if (url) { b.href = url; b.title = 'Open in the ' + DASHES[i][1]; b.setAttribute('aria-label', r + ', ' + c + ': ' + d.l + '. Open in the ' + DASHES[i][1]); }
-    else { b.type = 'button'; b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', r + ', ' + c + ': ' + d.l + (done ? '' : ', pending')); }
+    b.setAttribute('aria-pressed', 'false');
+    b.setAttribute('aria-label', r + ', ' + c + ': ' + d.l + (done ? '' : ', pending'));
     mtx.append(b);
   });
 });
 
-// The detail panel for one cell (pending rows, and cells with no dashboard line)
+// The detail panel for one cell
 function show(k, scroll) {
   mtx.querySelectorAll('.cell').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.k === k)));
   const [i, j] = k.split(',').map(Number), d = D[k];
@@ -289,7 +293,7 @@ function show(k, scroll) {
   if (scroll) panel.scrollIntoView({ block: 'nearest', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }
 mtx.addEventListener('click', e => { const c = e.target.closest('button.cell'); if (c) show(c.dataset.k, true); });
-panel.append(el('p', 'lead', 'Click a cell marked ↗ to open its dashboard on that agency. In a pending row, click a cell to see the sources we hold.'));
+show(SEIZED_ROW + ',0', false);
 </script>
 </body>
 </html>
