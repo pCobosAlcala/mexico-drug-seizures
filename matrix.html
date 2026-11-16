@@ -50,13 +50,14 @@
   <a class="site-name" href="index.html">Mexico drug supply data</a>
   <a class="tab" href="index.html">Seizures by source</a>
   <a class="tab" href="labs.html">Labs by source</a>
+  <a class="tab" href="precursors.html">Precursors by source</a>
   <a class="tab" href="matrix.html" aria-current="page">What data exists</a>
 </nav>
 <main>
   <header>
     <h1 class="pg-title">What data exists</h1>
     <p class="pg-intro">The data we hold on how Mexico enforces against drug supply, from precursor chemicals to arrests, by agency. The color of each cell shows the most detailed source we hold for it. Click a cell to see every source behind it, the years it covers, how detailed it is and its caveats.</p>
-    <p class="pg-intro"><b>Drugs seized</b> and <b>labs</b> are the rows worked through so far: their sources are harmonized and compared in the <a href="index.html">seizures dashboard</a> and the <a href="labs.html">labs dashboard</a>. The other rows are an inventory of files we hold, not yet harmonized.</p>
+    <p class="pg-intro"><b>Precursors</b>, <b>labs</b> and <b>drugs seized</b> are the rows worked through so far: their sources are harmonized and compared in the <a href="precursors.html">precursors</a>, <a href="labs.html">labs</a> and <a href="index.html">seizures</a> dashboards. The other rows are an inventory of files we hold, not yet harmonized.</p>
   </header>
 
   <div class="lgd" aria-label="Legend">
@@ -84,6 +85,14 @@
       <li><b>SEDENA's fentanyl pill sites</b> (transparency folio 330026424002985): 26 sites from April 2019 to October 2024, known only from press reports. The answer file itself would come from the transparency platform.</li>
       <li><b>FGR CENAPI answer</b> (folio 0001700006421), 2000 to 2020 by state, all agencies pooled. We hold it, but it is a scanned PDF that needs text recognition.</li>
     </ul>
+    <h2 style="margin-top:18px">Ways to extend the precursors row</h2>
+    <ul>
+      <li><b>The release behind SEDENA's precursor records</b>: a transparency request for the same table, with its folio, would confirm it and extend it past 2024.</li>
+      <li><b>Esfuerzo Nacional 2022 report</b>: has a table of precursor seizures, but only as an image; it needs text recognition.</li>
+      <li><b>Areas where precursor chemicals were stored</b>: SEDENA's 2025 to 2026 Informe de Labores counts 964 found by the army and the Guardia Nacional, September 2025 to August 2026; there is no table by chemical.</li>
+      <li><b>INCB precursor reports</b>: Mexico's seizures by chemical as reported to the International Narcotics Control Board; not held.</li>
+      <li><b>Quinto Elemento chart of drugs and chemicals found in labs</b>, 2018 to 2023: not downloaded.</li>
+    </ul>
   </section>
 </main>
 <footer class="site-foot">Working draft, November 2026. López Obrador's term, December 2018 to September 2024, is shaded in the year bars. See also the <a href="index.html">seizures dashboard</a>.</footer>
@@ -98,7 +107,7 @@ const SEIZED_ROW = 3;
 const S = (n, y0, y1, g, d, f, note) => ({ n, y0, y1, g, d, f, note });
 const N = t => ({ s: 'none', l: 'None', src: [], t: t || '' });
 const D = {
-'0,0': { s: 'fine', l: 'Municipal, monthly', src: [S('SEDENA precursor records', 2011, 2024, 'Municipality, month', '67 chemicals, kilograms or litres', 'code/2026/peter/data/precursores_sedena_detalle.csv', "2,233 records. Comes with Alejandro's data; the release behind it is not identified.")] },
+'0,0': { s: 'fine', l: 'Municipal, monthly', src: [S('SEDENA precursor records', 2011, 2024, 'Municipality, month', '67 chemical names, kilograms or litres; mostly methamphetamine chemicals and solvents', 'code/2026/peter/data/precursores_sedena_detalle.csv', "2,233 records. Came with Alejandro's data; the release behind it is not identified. Few records in 2019 and 2020.")] },
 '0,1': N(), '0,2': N(),
 '0,3': { s: 'part', l: '24 rows', src: [S("Alejandro's precursor file, FGR rows", 2017, 2023, 'State, year', 'Fentanyl precursors: ANPP, norfentanyl, 4-anilino piperidines', 'code/2026/peter/data/precursores.csv', '24 rows; source not found.')] },
 '0,4': N(), '0,5': N('Not held: the INCB precursors report (national, by chemical and year).'),
@@ -239,7 +248,8 @@ const WEB = [
 ];
 const webOf = s => WEB.find(w => w[0].test(s.n + ' ' + s.f));
 // Dashboards for the rows already harmonized, and the agency each column opens on
-const DASHES = { 3: ['index.html', 'seizures dashboard', ['army', 'navy', 'federal_police_gn', 'fgr', 'state_police', 'totals']],
+const DASHES = { 0: ['precursors.html', 'precursors dashboard', ['army', null, null, 'fgr', null, null]],
+                 3: ['index.html', 'seizures dashboard', ['army', 'navy', 'federal_police_gn', 'fgr', 'state_police', 'totals']],
                  2: ['labs.html', 'labs dashboard', ['army', null, 'federal_police_gn', 'fgr', 'state_police', 'totals']] };
 
 // The detail panel for one cell

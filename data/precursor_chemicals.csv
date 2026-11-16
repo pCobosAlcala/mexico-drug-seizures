@@ -1,0 +1,70 @@
+item,chemical,group,glabel,role,note,printed_as,held,item_order
+chem:P2P (phenyl-2-propanone),P2P (phenyl-2-propanone),meth,Methamphetamine,main precursor,"The key precursor of methamphetamine made the P2P way, the usual method in Mexico",FENIL 2 PROPANONA,"SEDENA: 141,736 litres (2011 to 2024); SEDENA: 6,285 kg (2012 to 2024)",1001
+chem:methylamine,methylamine,meth,Methamphetamine,main precursor,Reacts with P2P to make methamphetamine,METILAMINA,"SEDENA: 83,456 litres (2011 to 2024); SEDENA: 77,205 kg (2011 to 2022)",1002
+chem:N-methylformamide,N-methylformamide,meth,Methamphetamine,main precursor,Replaces methylamine in the Leuckart method,N-METILFORMOMIDA,"SEDENA: 44,660 litres (2023 to 2024)",1003
+chem:phenylpropanolamine (norephedrine),phenylpropanolamine (norephedrine),meth,Methamphetamine,main precursor,Ephedrine-type precursor; gives amphetamine,FENILPROPANOLAMINA,SEDENA: 23 kg (2011 to 2021); SEDENA: 14 litres (2021),1004
+chem:phenylbutyronitrile (as printed),phenylbutyronitrile (as printed),meth,Methamphetamine,used to make the precursor,"Name as printed; probably APAAN (alpha-phenylacetoacetonitrile), turned into P2P",PHENYLBUTYRONITRIL,"SEDENA: 787,000 kg (2011); SEDENA: 1,300 litres (2022 to 2024)",1005
+chem:2-phenylacetamide,2-phenylacetamide,meth,Methamphetamine,used to make the precursor,Turned into P2P,2 FENIL ACETAMIDA,"SEDENA: 302,645 kg (2011 to 2016); SEDENA: 250 litres (2023)",1006
+chem:benzyl chloride,benzyl chloride,meth,Methamphetamine,used to make the precursor,"Turned into benzyl cyanide, then P2P",CLORURO DE BENCILO,"SEDENA: 94,352 litres (2011 to 2024); SEDENA: 4,932 kg (2016 to 2024)",1007
+chem:phenylacetic acid,phenylacetic acid,meth,Methamphetamine,used to make the precursor,Turned into P2P,ACIDO FENILACETICO (AFA),"SEDENA: 43,865 litres (2011 to 2024); SEDENA: 22,002 kg (2011 to 2023)",1008
+chem:ethyl phenylacetate,ethyl phenylacetate,meth,Methamphetamine,used to make the precursor,Turned into P2P,ETIL FENIL ACETATO,"SEDENA: 34,727 litres (2011 to 2023); SEDENA: 51 kg (2012 to 2022)",1009
+chem:chlorotoluene,chlorotoluene,meth,Methamphetamine,used to make the precursor,"Probably alpha-chlorotoluene, another name for benzyl chloride",CLOROTOLUENO,"SEDENA: 10,400 litres (2011)",1010
+chem:p-tolyl phenylacetate,p-tolyl phenylacetate,meth,Methamphetamine,used to make the precursor,A designer substitute turned into P2P,FENIL ACETATO DE PARACRESILO (P-TOLILO),SEDENA: 400 litres (2024); SEDENA: 5 kg (2022),1011
+chem:tartaric acid,tartaric acid,meth,Methamphetamine,reagent,Separates the stronger form (d-methamphetamine) from P2P methamphetamine,ACIDO TARTARICO,"SEDENA: 210,020 kg (2011 to 2024); SEDENA: 16,166 litres (2011 to 2024)",1012
+chem:formic acid,formic acid,meth,Methamphetamine,reagent,Leuckart method; also a common industrial chemical,ACIDO FORMICO,"SEDENA: 54,380 litres (2011 to 2024)",1013
+chem:lead acetate,lead acetate,meth,Methamphetamine,reagent,Used to turn phenylacetic acid into P2P,ACETATO DE PLOMO,"SEDENA: 31,793 kg (2015 to 2024); SEDENA: 703 litres (2024)",1014
+chem:sodium acetate,sodium acetate,meth,Methamphetamine,reagent,Used with acetic anhydride to turn phenylacetic acid into P2P,ACETATO DE SODIO,"SEDENA: 13,692 kg (2011 to 2023); SEDENA: 1,101 litres (2011 to 2024)",1015
+chem:lead subacetate,lead subacetate,meth,Methamphetamine,reagent,Used to turn phenylacetic acid into P2P,SUBACETATO DE PLOMO,"SEDENA: 8,250 kg (2022 to 2024)",1016
+chem:potassium cyanide,potassium cyanide,meth,Methamphetamine,reagent,Turns benzyl chloride into benzyl cyanide; also used in mining,CIANURO DE POTASIO,"SEDENA: 7,658 litres (2021 to 2023); SEDENA: 1,840 kg (2011 to 2024)",1017
+chem:hydriodic acid,hydriodic acid,meth,Methamphetamine,reagent,Ephedrine method,ACIDO YODHIDRICO,SEDENA: 720 litres (2011 to 2024); SEDENA: 125 kg (2022),1018
+chem:sodium borohydride,sodium borohydride,meth,Methamphetamine,reagent,Reducing agent for P2P and methylamine,BOROHIDRURO DE SODIO,SEDENA: 300 litres (2023); SEDENA: 12 kg (2016),1019
+chem:iodine,iodine,meth,Methamphetamine,reagent,Ephedrine method,YODO,SEDENA: 48 kg (2012 to 2016); SEDENA: 41 litres (2011 to 2024),1020
+chem:mercury acetate,mercury acetate,meth,Methamphetamine,reagent,Used for the aluminium amalgam that joins P2P and methylamine,ACETATO DE MERCURIO,SEDENA: 2 kg (2012),1021
+chem:ANPP (4-anilino-N-phenethylpiperidine),ANPP (4-anilino-N-phenethylpiperidine),fentanyl,Fentanyl,main precursor,The last step before fentanyl,4-ANILINO-N-FENETILPIPERIDONA ANPP; 4-ANILINO-N-FENETILPIPERIDINA ANPP,"FGR: 2,749 kg (2017 to 2023); SEDENA: 855 litres (2022); FGR: 372 litres (2017 to 2021); SEDENA: 0 kg (2021)",2001
+chem:NPP (N-phenethyl-4-piperidone),NPP (N-phenethyl-4-piperidone),fentanyl,Fentanyl,main precursor,"Turned into ANPP, then fentanyl",N-FENETIL-4-PIPERIDONA NPP,SEDENA: 440 litres (2021 to 2023); SEDENA: 90 kg (2019 to 2023),2002
+chem:norfentanyl,norfentanyl,fentanyl,Fentanyl,main precursor,Turned into fentanyl,NORFENTANILO,FGR: 6 kg (2020),2003
+chem:ANPP mixed with xylazine,ANPP mixed with xylazine,fentanyl,Fentanyl,main precursor,A mixture; xylazine is a veterinary sedative found as an adulterant,MEZCLA DE XILACINA + ANPP,FGR: 0 kg (2019),2004
+chem:1-boc-4-AP,1-boc-4-AP,fentanyl,Fentanyl,used to make the precursor,"Turned into 4-AP, then ANPP or norfentanyl",4-ANILINO-1-BOC-PIPERIDINA,FGR: 20 kg (2023),2005
+chem:N-(4-fluorophenyl)piperidin-4-amine,N-(4-fluorophenyl)piperidin-4-amine,fentanyl,Fentanyl,used to make the precursor,"Fluorinated 4-AP, for para-fluorofentanyl",N(4-FLUOROFENIL)PIPERIDIN-4-AMINA,FGR: 8 litres (2021),2006
+chem:papaverine,papaverine,heroin,Heroin,not a precursor,An opium alkaloid: a sign of opium processing,PAPAVERINA,SEDENA: 21 kg (2012),3001
+chem:potassium permanganate,potassium permanganate,cocaine,Cocaine,reagent,Oxidizer used to refine cocaine,PERMANGANATO DE POTASIO,SEDENA: 950 kg (2012 to 2023); SEDENA: 100 litres (2022),4001
+chem:acetic anhydride,acetic anhydride,several,Several drugs,reagent,Turns morphine into heroin; also used to turn phenylacetic acid into P2P for methamphetamine,ANHIDRIDO ACETICO,"SEDENA: 105,613 litres (2011 to 2024); SEDENA: 245 kg (2011)",5001
+chem:toluene,toluene,general,Solvents and general reagents,solvent or general reagent,"",TOLUENO,"SEDENA: 511,262 litres (2011 to 2024); SEDENA: 15,655 kg (2011 to 2024)",6001
+chem:hydrochloric acid,hydrochloric acid,general,Solvents and general reagents,solvent or general reagent,Used in almost every drug lab,ACIDO CLORHIDRICO,"SEDENA: 503,034 litres (2011 to 2024); SEDENA: 34,496 kg (2011 to 2022)",6002
+chem:ethanol,ethanol,general,Solvents and general reagents,solvent or general reagent,"",ALCOHOL ETILICO; ETANOL,"SEDENA: 494,994 litres (2011 to 2024); SEDENA: 103 kg (2013)",6003
+chem:sodium hydroxide (caustic soda),sodium hydroxide (caustic soda),general,Solvents and general reagents,solvent or general reagent,"",SOSA CAUSTICA; HIDROXIDO DE SODIO,"SEDENA: 411,869 kg (2011 to 2024); SEDENA: 29,893 litres (2011 to 2024)",6004
+chem:methyl acetate,methyl acetate,general,Solvents and general reagents,solvent or general reagent,"",ACETATO DE METILO,"SEDENA: 313,075 litres (2011 to 2024)",6005
+chem:xylenes,xylenes,general,Solvents and general reagents,solvent or general reagent,"",XILENOS,"SEDENA: 290,640 litres (2011 to 2012)",6006
+chem:ammonium hydroxide,ammonium hydroxide,general,Solvents and general reagents,solvent or general reagent,"",HIDROXIDO DE AMONIO,"SEDENA: 210,962 litres (2011 to 2023); SEDENA: 2,188 kg (2011 to 2023)",6007
+chem:methyl ethyl ketone,methyl ethyl ketone,general,Solvents and general reagents,solvent or general reagent,"",METIL ETIL CETONA,"SEDENA: 129,769 kg (2011 to 2024); SEDENA: 947 litres (2012 to 2024)",6008
+chem:ammonium chloride,ammonium chloride,general,Solvents and general reagents,solvent or general reagent,"",CLORURO DE AMONIO,"SEDENA: 65,784 kg (2011 to 2023); SEDENA: 3,140 litres (2012 to 2024)",6009
+chem:acetic acid,acetic acid,general,Solvents and general reagents,solvent or general reagent,"",ACIDO ACETICO,"SEDENA: 53,654 litres (2011 to 2024)",6010
+chem:methanol,methanol,general,Solvents and general reagents,solvent or general reagent,"",ALCOHOL METILICO (METANOL),"SEDENA: 53,289 litres (2011 to 2024)",6011
+chem:ethyl acetate,ethyl acetate,general,Solvents and general reagents,solvent or general reagent,"",ACETATO DE ETILO; ACETATO ETILICO,"SEDENA: 50,512 litres (2011 to 2024)",6012
+chem:sulfuric acid,sulfuric acid,general,Solvents and general reagents,solvent or general reagent,Used in almost every drug lab,ACIDO SULFURICO,"SEDENA: 43,486 litres (2011 to 2024)",6013
+chem:ammonium nitrate,ammonium nitrate,general,Solvents and general reagents,solvent or general reagent,"",NITRATO DE AMONIO,"SEDENA: 31,768 kg (2014 to 2024); SEDENA: 130 litres (2016 to 2024)",6014
+chem:formaldehyde,formaldehyde,general,Solvents and general reagents,solvent or general reagent,"",FORMALDEHIDO,"SEDENA: 29,900 litres (2015 to 2021)",6015
+chem:anhydrous ammonia,anhydrous ammonia,general,Solvents and general reagents,solvent or general reagent,Also used in one ephedrine method for methamphetamine,AMONIACO ANHIDRIDO,"SEDENA: 29,361 litres (2011 to 2024)",6016
+chem:calcium chloride,calcium chloride,general,Solvents and general reagents,solvent or general reagent,"",CLORURO DE CALCIO,"SEDENA: 22,905 kg (2012 to 2024); SEDENA: 4,588 litres (2023 to 2024)",6017
+chem:sodium carbonate,sodium carbonate,general,Solvents and general reagents,solvent or general reagent,"",CARBONATO DE SODIO,"SEDENA: 21,917 kg (2011 to 2024)",6018
+chem:isopropyl alcohol,isopropyl alcohol,general,Solvents and general reagents,solvent or general reagent,"",ALCOHOL ISOPROPILICO,"SEDENA: 15,650 litres (2011 to 2024)",6019
+chem:methylene chloride,methylene chloride,general,Solvents and general reagents,solvent or general reagent,"",CLORURO DE METILENO,"SEDENA: 6,930 litres (2022 to 2024); SEDENA: 54 kg (2016 to 2024)",6020
+chem:butylbenzene,butylbenzene,general,Solvents and general reagents,solvent or general reagent,"",BUTILBENCENO,"SEDENA: 5,390 litres (2023 to 2024)",6021
+chem:calcium carbonate,calcium carbonate,general,Solvents and general reagents,solvent or general reagent,"",CARBONATO DE CALCIO,"SEDENA: 4,786 kg (2012 to 2024); SEDENA: 90 litres (2023 to 2024)",6022
+chem:hexane,hexane,general,Solvents and general reagents,solvent or general reagent,"",HEXANO,"SEDENA: 3,820 litres (2011 to 2018)",6023
+chem:diethylamine,diethylamine,general,Solvents and general reagents,solvent or general reagent,"",DIETILAMINA,"SEDENA: 3,200 litres (2016 to 2024)",6024
+chem:potassium hydroxide,potassium hydroxide,general,Solvents and general reagents,solvent or general reagent,"",HIDROXIDO DE POTASIO,"SEDENA: 3,000 litres (2024); SEDENA: 417 kg (2018 to 2024)",6025
+chem:sodium sulfate,sodium sulfate,general,Solvents and general reagents,solvent or general reagent,"",SULFATO DE SODIO,"SEDENA: 2,437 kg (2012 to 2024); SEDENA: 270 litres (2022 to 2023)",6026
+chem:butyl acetate,butyl acetate,general,Solvents and general reagents,solvent or general reagent,"",ACETATO DE BUTILO,"SEDENA: 1,600 litres (2011)",6027
+chem:cyclohexylamine (as printed),cyclohexylamine (as printed),general,Solvents and general reagents,solvent or general reagent,Name as printed,CICLOHEXAMINA,"SEDENA: 1,394 litres (2015 to 2022)",6028
+chem:ethyl ether,ethyl ether,general,Solvents and general reagents,solvent or general reagent,"",ETER ETILICO,"SEDENA: 1,080 litres (2011 to 2024); SEDENA: 31 kg (2011)",6029
+chem:chloroform,chloroform,general,Solvents and general reagents,solvent or general reagent,"",CLOROFORMO,SEDENA: 980 litres (2011 to 2024); SEDENA: 400 kg (2024),6030
+chem:potassium bicarbonate,potassium bicarbonate,general,Solvents and general reagents,solvent or general reagent,"",BICARBONATO DE POTASIO,SEDENA: 900 litres (2011),6031
+chem:potassium carbonate,potassium carbonate,general,Solvents and general reagents,solvent or general reagent,"",CARBONATO DE POTASIO,SEDENA: 325 kg (2022 to 2023),6032
+chem:sodium bicarbonate,sodium bicarbonate,general,Solvents and general reagents,solvent or general reagent,"",BICARBONATO DE SODIO,SEDENA: 60 kg (2012 to 2022),6033
+chem:ferric chloride,ferric chloride,general,Solvents and general reagents,solvent or general reagent,"",CLORURO FERRICO,SEDENA: 4 litres (2012),6034
+chem:dextroamphetamine,dextroamphetamine,other,"Not precursors, or unclear",not a precursor,"A finished amphetamine drug, not a chemical",DEXTROANFETAMINA,SEDENA: 362 kg (2011),7001
+chem:isopropylamphetamine,isopropylamphetamine,other,"Not precursors, or unclear",not a precursor,"An amphetamine-type drug, not a chemical",ISOPROPILANFETAMINA,SEDENA: 1 litres (2018),7002
+chem:fertiamina (as printed),fertiamina (as printed),other,"Not precursors, or unclear",unclear,Name not recognized,FERTIAMINA,"SEDENA: 263,400 litres (2011)",7003
+chem:acido anhidrico (as printed),acido anhidrico (as printed),other,"Not precursors, or unclear",unclear,Name not recognized; perhaps an anhydride,ACIDO ANHIDRICO,"SEDENA: 9,749 litres (2011 to 2024)",7004
+chem:1-ethyl-3-hydroxypiperidine,1-ethyl-3-hydroxypiperidine,other,"Not precursors, or unclear",unclear,A piperidine listed with the FGR's fentanyl chemicals; not a usual fentanyl precursor,1-ETIL-3-HIDROXIPIPERIDINA,FGR: 49 litres (2019),7005
