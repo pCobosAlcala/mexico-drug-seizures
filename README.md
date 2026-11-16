@@ -2,9 +2,10 @@
 
 Working draft, November 2026. Site: https://pcobosalcala.github.io/mexico-drug-seizures/
 
-Two pages:
+Three pages:
 
 - **Seizures by source** (`index.html`). How much of each drug Mexican agencies say they seized each year, from every government source we hold: the army (SEDENA), the navy (SEMAR), the Federal Police and Guardia Nacional, the federal prosecutors (FGR), state police and prosecutors, and pooled totals. Pick a drug, unit and place; compare agencies, or compare the versions of one agency's own records, which do not always agree.
+- **Labs by source** (`labs.html`). How many clandestine drug labs each agency says it found each year: the army, the Federal Police and Guardia Nacional, the FGR, state police, and UNODC for comparison. Pick the drug a lab produced (where the source records it) and the place.
 - **What data exists** (`matrix.html`). The data we hold for each stage of enforcement (precursors, eradication, labs, drugs seized, incineration, airstrips, customs and ports, arrests) by agency. Click a cell to see each source, its years, how detailed it is and its caveats.
 
 ## Data
@@ -26,6 +27,23 @@ Two pages:
 
 `data/dash_sources.csv`: one row per source, with its agency, version, role, years, most detailed level, drugs, notes and where we hold the original file. Main source (main = 1) is the version drawn in the one line per agency view. Pooled totals and compiled files are for comparison only and are never added to agency series.
 
+`data/labs.csv`: one row per source, agency, place, year and drug produced.
+
+| Column | Meaning |
+|---|---|
+| source_id | Source (see `labs_sources.csv`) |
+| agency | Agency as the source names it |
+| place | INEGI state code; 00 is national |
+| year | Calendar year the lab was found |
+| product | Drug the lab produced: all (every lab), meth, heroin, cocaine, other, not_stated |
+| labs | Number of labs |
+| partial | 1 when the source covers only part of that year |
+| flag | Values kept out of the chart as likely errors at the source (none so far) |
+
+`data/labs_sources.csv`: one row per lab source, same layout as `dash_sources.csv`.
+
 ## Caveats
 
-The navy and Guardia Nacional transparency answers stop in 2022 and 2021; after that the Guardia Nacional appears only in INEGI's police census. The INEGI federal prosecutor census has no seizure table for 2020 and 2021. SEDENA's yearly public sheets count marijuana seized plus incinerated. The FGR fentanyl file has a likely unit error in 2020 (flagged).
+Seizures: the navy and Guardia Nacional transparency answers stop in 2022 and 2021; after that the Guardia Nacional appears only in INEGI's police census. The INEGI federal prosecutor census has no seizure table for 2020 and 2021. SEDENA's yearly public sheets count marijuana seized plus incinerated. The FGR fentanyl file has a likely unit error in 2020 (flagged).
+
+Labs: only the army's register, GI-TOC, UNODC and one Guardia Nacional answer record the drug produced, and none records a fentanyl lab. The Federal Police answer has no labs after 2018; the INEGI police censuses ask about labs only for 2024 and 2025. UNODC's figures equal the FGR census in 2020 to 2022.

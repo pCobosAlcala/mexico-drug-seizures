@@ -48,13 +48,14 @@
 <nav class="site-nav" aria-label="Pages">
   <a class="site-name" href="index.html">Mexico drug supply data</a>
   <a class="tab" href="index.html">Seizures by source</a>
+  <a class="tab" href="labs.html">Labs by source</a>
   <a class="tab" href="matrix.html" aria-current="page">What data exists</a>
 </nav>
 <main>
   <header>
     <h1 class="pg-title">What data exists</h1>
     <p class="pg-intro">The data we hold on how Mexico enforces against drug supply, from precursor chemicals to arrests, by agency. The color of each cell shows the most detailed source we hold for it. Click a cell to see every source behind it, the years it covers, how detailed it is and its caveats.</p>
-    <p class="pg-intro"><b>Drugs seized</b> is the row worked through so far: its sources are harmonized and compared in the <a href="index.html">seizures dashboard</a>. The other rows are an inventory of files we hold, not yet harmonized.</p>
+    <p class="pg-intro"><b>Drugs seized</b> and <b>labs</b> are the rows worked through so far: their sources are harmonized and compared in the <a href="index.html">seizures dashboard</a> and the <a href="labs.html">labs dashboard</a>. The other rows are an inventory of files we hold, not yet harmonized.</p>
   </header>
 
   <div class="lgd" aria-label="Legend">
@@ -120,19 +121,20 @@ const D = {
 
 '2,0': { s: 'fine', l: 'Municipal, by drug', src: [
   S('SEDENA answer to folio 330026423000179', 1990, 2022, 'Municipality, month', 'Drug produced: 2,681 meth, 23 heroin, 2 cocaine, none fentanyl', '.../330026423000179_SEDENA (sheet LABORATORIOS)', '2,706 labs.'),
-  S('GI-TOC tables (same register)', 1990, 2024, 'Municipality, year', 'Drug produced; 3,752 labs, none fentanyl', 'gitoc_viz/extracted_from_html', '2024 is January to June.'),
-  S('Quinto Elemento lab map', 2018, 2023, 'Municipality, exact day', 'No drug', 'bases/peter_mexico_drugs/raw/quintoelab_labs_flourish', "2,133 labs; joins to SEDENA's register."),
-  S('SEDENA yearly public sheets', 2014, 2026, 'National, year', 'Count only', 'sedena_operaciones_narcotrafico', 'From October 2024 pooled with other production sites.')] },
+  S('GI-TOC tables (same register)', 1990, 2024, 'Municipality, year', 'Drug produced; 3,752 labs, none fentanyl', 'gitoc_viz/extracted_from_html', 'National counts identical to the folio in every year and drug from 1990 to 2022; runs to June 2024. The main SEDENA line in the labs dashboard.'),
+  S('Quinto Elemento lab map', 2018, 2023, 'Municipality, exact day', 'No drug', 'bases/peter_mexico_drugs/raw/quintoelab_labs_flourish', '2,133 labs. Identical to the register in 2018 to 2022.'),
+  S('SEDENA yearly public sheets', 2014, 2026, 'National, year', 'Count only', 'sedena_operaciones_narcotrafico', 'To September 2026. A separate sheet for October 2024 to December 2025 pools labs with "concentration areas".')] },
 '2,1': { s: 'part', l: 'Press only', src: [S('SEMAR press release', 2025, 2025, 'One operation', 'Meth lab in Zacatecas', 'bases/peter_mexico_drugs/raw/semar_zacatecas', 'One release held.')] },
 '2,2': { s: 'fine', l: 'Municipal, monthly', src: [
-  S('Federal Police answer to folio 0413100015520', 2006, 2020, 'Municipality, month', 'No drug', '.../0413100015520_PF (sheet Laboratorios)', '117 rows.'),
+  S('Federal Police answer to folio 0413100015520', 2007, 2018, 'Municipality, month', 'No drug', '.../0413100015520_PF (sheet Laboratorios)', '438 labs; none after December 2018.'),
   S('Guardia Nacional answer, Anexo I', 2019, 2021, 'Municipality, month', 'No drug', '.../332259822000079_GN/Anexo I', '2 labs, July 2019 to December 2021.'),
-  S('Guardia Nacional answer, Anexo II', 2020, 2021, 'State, month', 'Drug produced', '.../332259822000079_GN/Anexo II', '6 labs.')] },
+  S('Guardia Nacional answer, Anexo II', 2020, 2021, 'State, month', 'Drug produced', '.../332259822000079_GN/Anexo II', '6 labs.'),
+  S('INEGI federal police census, Guardia Nacional', 2024, 2025, 'National, year', 'No drug', 'bases/detenciones_mx/raw/cnspf_2025 and cnspf_2026 (table 21)', '5 labs in 2024 and 29 in 2025; asked only from the 2025 edition.')] },
 '2,3': { s: 'coarse', l: 'State, yearly', src: [
-  S('INEGI federal prosecutor census (CNPJF)', 2016, 2024, 'State, year', 'No drug', 'inegi_cnpjf', ''),
+  S('INEGI federal prosecutor census (CNPJF)', 2015, 2024, 'State, year (national only for 2015 and 2016)', 'No drug', 'inegi_cnpjf', 'Printed national totals equal the sum of states in 2017 and 2018.'),
   S('FGR CENAPI answer, folio 0001700006421', 2000, 2020, 'State, year', 'No drug; all agencies pooled', 'Anexo 6421.pdf', 'Scanned.')] },
-'2,4': { s: 'part', l: '2025 only', src: [S('INEGI state police census', 2025, 2025, 'State, year', 'State police labs; Guardia Nacional national', 'bases/peter_mexico_drugs/raw/inegi_cnsp', 'Listed in our data catalog; not yet checked in the file.')] },
-'2,5': { s: 'coarse', l: 'National', src: [S('UNODC annual questionnaire, annex 9.1', 2020, 2024, 'National, year', 'By end product', 'bases/peter_mexico_drugs/raw/unodc_wdr2026', "Far below SEDENA's counts.")] },
+'2,4': { s: 'part', l: '2024 and 2025', src: [S('INEGI state police census (CNSPE)', 2024, 2025, 'State, year', 'No drug', 'bases/detenciones_mx/raw/cnspe_2025 and cnspe_2026 (table 21)', '8 labs in 2024 and 21 in 2025; most states report none.')] },
+'2,5': { s: 'coarse', l: 'National', src: [S('UNODC annual questionnaire, annex 9.1', 2020, 2024, 'National, year', 'By end product', 'bases/peter_mexico_drugs/raw/unodc_wdr2026', "Equal to the FGR census in 2020 to 2022, so they look like the federal prosecutors' labs.")] },
 
 '3,0': { s: 'fine', l: 'Municipal, monthly', src: [
   S('SEDENA answer to folio 330026423000179 (main register)', 1990, 2022, 'Municipality, month', 'Marijuana, seeds, cocaine, opium gum, heroin, meth, fentanyl, in kilograms, pills and ampoules', 'bases/peter_mexico_drugs/raw/mucd_acciones_antidrogas/.../330026423000179_SEDENA (sheet DROGA ASEGURADA)', 'The most detailed SEDENA register. The main SEDENA source in the dashboard.'),
@@ -240,9 +242,10 @@ function show(k, scroll) {
     box.append(el('div', 'file', 'Where we hold it: ' + s.f));
     out.push(box);
   });
-  if (i === SEIZED_ROW && d.src.length) {
-    const a = el('a', 'toDash', 'Compare these sources year by year in the seizures dashboard');
-    a.href = 'index.html';
+  const DASHES = { 3: ['index.html', 'seizures dashboard'], 2: ['labs.html', 'labs dashboard'] };
+  if (DASHES[i] && d.src.length) {
+    const a = el('a', 'toDash', 'Compare these sources year by year in the ' + DASHES[i][1]);
+    a.href = DASHES[i][0];
     out.push(a);
   }
   panel.replaceChildren(...out);
