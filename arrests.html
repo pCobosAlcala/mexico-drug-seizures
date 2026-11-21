@@ -129,11 +129,34 @@ window.dash = (function () {
 .mx-notes { border-top: 1px solid var(--color-border-line); padding-top: var(--cds-pad-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); max-width: 72ch; }
 .mx-notes summary { cursor: pointer; color: var(--color-fg); }
 .mx-notes p { margin: var(--cds-gap-sm) 0 0; line-height: 1.55; }
+.mx-stepshead, .mx-step { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: var(--cds-gap-md); }
+.mx-stepshead { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-bottom: var(--cds-gap-sm); }
+.mx-step { align-items: start; }
+.mx-stepbox, .mx-stepsrc summary { padding: 10px 14px; display: flex; flex-direction: column; gap: 2px; text-align: center; }
+.mx-stepbox { background: var(--lvl-coarse-bg); color: var(--lvl-coarse-fg); border: 1px solid color-mix(in srgb, var(--lvl-coarse-fg) 30%, transparent); border-radius: var(--cds-radius); }
+.mx-stepbox b, .mx-stepsrc summary b { font-weight: var(--cds-font-weight-medium); }
+.mx-stepbox span, .mx-stepsrc summary span { font-size: var(--cds-font-size-caption); }
+.mx-stepsrc { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); }
+.mx-stepsrc summary { list-style: none; cursor: pointer; }
+.mx-stepsrc summary::-webkit-details-marker { display: none; }
+.mx-stepsrc summary:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+.mx-stepsrc summary .mx-stepmore { color: var(--color-link); }
+.mx-stepsrc[open] .mx-caret { transform: rotate(90deg); }
+.mx-stepbody { border-top: 1px solid var(--color-border-line); padding: 10px 14px 12px; font-size: var(--cds-font-size-caption); display: flex; flex-direction: column; gap: 8px; }
+.mx-stepbody p { margin: 0; }
+.mx-stepbody ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.mx-stepbody li b { font-weight: var(--cds-font-weight-medium); }
+.mx-stepbody .mx-stepmeta { display: block; color: var(--color-fg-muted); }
+.mx-stepbody .mx-stephow { color: var(--color-fg-muted); }
+.mx-steparrow { color: var(--color-fg-muted); padding: 4px 0; }
+.mx-steparrow span { text-align: center; }
 @media (prefers-reduced-motion: reduce) { .mx-caret { transition: none; } }
 @media (max-width: 600px) {
   .mx-covitem summary { grid-template-columns: 1.1rem minmax(0, 1fr); }
   .mx-covitem summary .mx-covbar { grid-column: 2; }
   .mx-axisyears { display: none; }
+  .mx-stepshead { display: none; }
+  .mx-step { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .mx-table th.mx-rowname, .mx-table td.mx-rowname { min-width: 9rem; }
 }
 </style>
@@ -141,8 +164,78 @@ window.dash = (function () {
 <div class="mx">
   <header id="top">
     <h1 class="mx-title">Mexico drug arrests by source</h1>
-    <p class="mx-intro">Arrests that can be tied to drugs, from every source we hold. The sources count three different things, kept apart: people detained, drug crimes recorded when the police hand people to a prosecutor (one person can carry several crimes), people charged by state prosecutors, and people in prison by legal status. First pick what to count, then the crime, drug or legal status.</p>
+    <p class="mx-intro">Arrests that can be tied to drugs, from every source we hold. A person caught with drugs can go through four steps, and a different office counts each one, so the numbers never match and are never added. Below the steps, pick what to count, then the crime, drug or legal status.</p>
   </header>
+
+  <section id="steps-sec" aria-labelledby="steps-title">
+    <h2 class="mx-h2" id="steps-title">Four steps after a drug arrest, and who counts each</h2>
+    <div class="mx-stepshead" aria-hidden="true"><span>What happens</span><span>Who counts it, and what they say. Click to see the sources.</span></div>
+    <div class="mx-step">
+      <div class="mx-stepbox"><b>Caught</b><span>by soldiers, marines or police</span></div>
+      <details class="mx-stepsrc">
+        <summary><b>Army and navy</b><span>how many people, nothing more</span><span class="mx-stepmore"><span class="mx-caret" aria-hidden="true">&#9656;</span> 5 sources, who reports them</span></summary>
+        <div class="mx-stepbody">
+        <p>Reported by: SEDENA (army) and SEMAR (navy). For comparison only: all federal agencies together.</p>
+        <ul>
+          <li><b>Government yearly report (Informe de Gobierno), army table</b><span class="mx-stepmeta">SEDENA. 1995 to 2024. National total.</span></li>
+          <li><b>Army yearly results sheets</b><span class="mx-stepmeta">SEDENA. 2014 to 2026, 2026 in part. National total.</span></li>
+          <li><b>Government yearly report, navy table</b><span class="mx-stepmeta">SEMAR. 1995 to 2024. National total.</span></li>
+          <li><b>Government yearly report, national effort table</b><span class="mx-stepmeta">All federal agencies together. 2000 to 2024. National total. Comparison only.</span></li>
+          <li><b>INEGI federal prosecutor census</b><span class="mx-stepmeta">All federal agencies together, as reported by the FGR. 2016 to 2024. By state. Comparison only.</span></li>
+        </ul>
+        <p class="mx-stephow">In the chart below, choose &ldquo;people detained&rdquo;.</p>
+        </div>
+      </details>
+    </div>
+    <div class="mx-step mx-steparrow" aria-hidden="true"><span>&#8595;</span></div>
+    <div class="mx-step">
+      <div class="mx-stepbox"><b>Brought to a prosecutor</b><span>police deliver the person</span></div>
+      <details class="mx-stepsrc">
+        <summary><b>Police</b><span>which drug crime</span><span class="mx-stepmore"><span class="mx-caret" aria-hidden="true">&#9656;</span> 2 sources, who reports them</span></summary>
+        <div class="mx-stepbody">
+        <p>Reported by: the state police of each state, and the Guardia Nacional.</p>
+        <ul>
+          <li><b>INEGI state police census</b><span class="mx-stepmeta">State police. 2017 to 2025 (2025 national total only). By state and type of drug crime. Up to 2019 it counted police interventions, from 2020 handovers.</span></li>
+          <li><b>INEGI federal police census</b><span class="mx-stepmeta">Guardia Nacional. 2019 to 2025. National. By type of drug crime from 2021 to 2024.</span></li>
+        </ul>
+        <p class="mx-stephow">It counts crimes, not people: one person can carry several.</p>
+        <p class="mx-stephow">In the chart below, choose &ldquo;crimes recorded&rdquo;.</p>
+        </div>
+      </details>
+    </div>
+    <div class="mx-step mx-steparrow" aria-hidden="true"><span>&#8595;</span></div>
+    <div class="mx-step">
+      <div class="mx-stepbox"><b>Case file opened</b><span>prosecutor names a suspect</span></div>
+      <details class="mx-stepsrc">
+        <summary><b>State prosecutors</b><span>which crime and which drug</span><span class="mx-stepmore"><span class="mx-caret" aria-hidden="true">&#9656;</span> 1 source, who reports them</span></summary>
+        <div class="mx-stepbody">
+        <p>Reported by: the state prosecutor&rsquo;s office of each state.</p>
+        <ul>
+          <li><b>INEGI state prosecutor census</b><span class="mx-stepmeta">State prosecutors. 2019 to 2024. By state. Street dealing (narcomenudeo) only, by type of crime, and by drug from 2020. Counts crimes, and people named as suspects, arrested or not.</span></li>
+        </ul>
+        <p class="mx-stephow">Federal prosecutor (FGR) case files: we hold only 2017 to 2019, so they are not charted.</p>
+        <p class="mx-stephow">In the chart below, choose &ldquo;people charged&rdquo; (or &ldquo;crimes recorded&rdquo; for its crimes).</p>
+        </div>
+      </details>
+    </div>
+    <div class="mx-step mx-steparrow" aria-hidden="true"><span>&#8595;</span></div>
+    <div class="mx-step">
+      <div class="mx-stepbox"><b>In prison</b><span>waiting for trial, or sentenced</span></div>
+      <details class="mx-stepsrc">
+        <summary><b>Prisons</b><span>waiting or sentenced</span><span class="mx-stepmore"><span class="mx-caret" aria-hidden="true">&#9656;</span> 2 sources, who reports them</span></summary>
+        <div class="mx-stepbody">
+        <p>Reported by: state prisons and federal prisons.</p>
+        <ul>
+          <li><b>INEGI state prison census</b><span class="mx-stepmeta">State prisons. 2020 to 2024. By state. Waiting for trial or sentenced; from 2022, waiting is split into mandatory and justified pretrial detention.</span></li>
+          <li><b>INEGI federal prison census</b><span class="mx-stepmeta">Federal prisons. 2019 to 2024. National. Waiting for trial or sentenced.</span></li>
+        </ul>
+        <p class="mx-stephow">It counts the drug crimes of the people held at the end of each year.</p>
+        <p class="mx-stephow">In the chart below, choose &ldquo;people in prison&rdquo;.</p>
+        </div>
+      </details>
+    </div>
+    <p class="mx-caption">Some people leave at every step, and some enter at the case file step without an arrest, so the steps never add up to each other.</p>
+  </section>
 
   <section id="controls" class="mx-panel" aria-label="What to show">
     <div class="mx-views" role="group" aria-label="View">
