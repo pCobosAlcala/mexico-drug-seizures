@@ -2,7 +2,7 @@
 
 Working draft, November 2026. Site: https://pcobosalcala.github.io/mexico-drug-seizures/
 
-Seven pages:
+Eight pages:
 
 - **Seizures by source** (`index.html`). How much of each drug Mexican agencies say they seized each year, from every government source we hold: the army (SEDENA), the navy (SEMAR), the Federal Police and Guardia Nacional, the federal prosecutors (FGR), state police and prosecutors, and pooled totals. Pick a drug, unit and place; compare agencies, or compare the versions of one agency's own records, which do not always agree.
 - **Labs by source** (`labs.html`). How many clandestine drug labs each agency says it found each year: the army, the Federal Police and Guardia Nacional, the FGR, state police, and UNODC for comparison. Pick the drug a lab produced (where the source records it) and the place.
@@ -10,7 +10,8 @@ Seven pages:
 - **Eradication by source** (`eradication.html`). Marijuana and poppy plots destroyed and hectares eradicated, by agency, and for the army by method (aerial spraying or by hand).
 - **Incineration by source** (`incineration.html`). Kilograms of seized drugs the army incinerated, by drug.
 - **Airstrips by source** (`airstrips.html`). Clandestine airstrips disabled by the army, the navy and the FGR.
-- **What data exists** (`matrix.html`). The data we hold for each stage of enforcement (precursors, eradication, labs, drugs seized, incineration, airstrips, arrests) by agency. A cell opens its dashboard on that agency; arrests is still pending, and its cells show the sources we hold.
+- **Arrests by source** (`arrests.html`). Drug-related arrests: people detained (army, navy, all federal agencies), drug crimes in police handovers (state police, Guardia Nacional) and people charged for narcomenudeo by state prosecutors, by type of crime and substance. The three units are never added.
+- **What data exists** (`matrix.html`). The data we hold for each stage of enforcement (precursors, eradication, labs, drugs seized, incineration, airstrips, arrests) by agency. A cell opens its dashboard on that agency; every row has its dashboard; a cell shows the sources behind it.
 
 ## Data
 

@@ -59,13 +59,14 @@
   <a class="tab" href="eradication.html">Eradication</a>
   <a class="tab" href="incineration.html">Incineration</a>
   <a class="tab" href="airstrips.html">Airstrips</a>
+  <a class="tab" href="arrests.html">Arrests</a>
   <a class="tab" href="matrix.html" aria-current="page">What data exists</a>
 </nav>
 <main>
   <header>
     <h1 class="pg-title">What data exists</h1>
     <p class="pg-intro">The data we hold on how Mexico enforces against drug supply, from precursor chemicals to arrests, by agency. The color of each cell shows the most detailed source we hold for it. Click a row name marked ↗ to open its dashboard. Click a cell to see every source behind it, the years it covers, how detailed it is, its caveats and its website.</p>
-    <p class="pg-intro">Every row except <b>arrests</b> has its own dashboard, where the sources are harmonized and compared: <a href="precursors.html">precursors</a>, <a href="eradication.html">eradication</a>, <a href="labs.html">labs</a>, <a href="index.html">seizures</a>, <a href="incineration.html">incineration</a> and <a href="airstrips.html">airstrips</a>. Arrests is pending: an inventory of the files we hold.</p>
+    <p class="pg-intro">Every row has its own dashboard, where the sources are harmonized and compared: <a href="precursors.html">precursors</a>, <a href="eradication.html">eradication</a>, <a href="labs.html">labs</a>, <a href="index.html">seizures</a>, <a href="incineration.html">incineration</a>, <a href="airstrips.html">airstrips</a> and <a href="arrests.html">arrests</a>.</p>
   </header>
 
   <div class="lgd" aria-label="Legend">
@@ -202,19 +203,19 @@ const D = {
 
 
 '6,0': { s: 'coarse', l: 'National, yearly', src: [
-  S('Informe de Gobierno annex, SEDENA table', 2005, 2024, 'National, year', 'Drug crimes and firearms law', 'informes_gobierno (page 692)', ''),
-  S('SEDENA yearly public sheets', 2014, 2026, 'National, year', 'All crimes', 'sedena_operaciones_narcotrafico', '')] },
-'6,1': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, SEMAR table', 2005, 2024, 'National, year', 'Drug and related crimes', 'informes_gobierno (page 692)', '')] },
-'6,2': { s: 'coarse', l: 'National', src: [S('INEGI federal police census, people handed over', 2019, 2025, 'Guardia Nacional national total', 'By crime type', 'bases/detenciones_mx', 'Counts crimes, not people.')] },
+  S('Informe de Gobierno annex, SEDENA table', 1995, 2024, 'National, year', 'People detained: drug crimes and the firearms law', 'bases/peter_mexico_drugs/raw/informes_gobierno (6th Informe, page 692)', '2024 is January to June.'),
+  S('SEDENA yearly public sheets', 2014, 2026, 'National, year', 'People detained in operations against drug trafficking; no crime or place', 'bases/peter_mexico_drugs/raw/sedena_operaciones_narcotrafico', 'To September 2026. Higher than the Informe from 2019.')] },
+'6,1': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, SEMAR table', 1995, 2024, 'National, year', 'People detained', 'bases/peter_mexico_drugs/raw/informes_gobierno (6th Informe, page 692)', 'The definition printed with the table was not checked.')] },
+'6,2': { s: 'coarse', l: 'National, yearly', src: [S('INEGI federal police census (CNSPF)', 2019, 2025, 'National, year; municipal tables 2021 to 2024 (not used)', 'Drug crimes of people the Guardia Nacional handed to a prosecutor: narcomenudeo and federal drug crimes by type; no substance', 'bases/detenciones_mx/raw', 'Counts crimes, not people. 2019 and 2020 only federal drug crimes as one group.')] },
 '6,3': { s: 'coarse', l: 'State; windows', src: [
-  S('INEGI federal prosecutor census, drug detainees', 2016, 2024, 'State, year', 'Drug crimes; no substance, no arresting agency', 'inegi_cnpjf', ''),
-  S('PGR detainees by arresting agency (window)', 2015, 2016, 'State, month', 'All federal crimes, drug subtypes; names the agency', 'bases/peter_mexico_drugs/raw/pgr_detenidos_datamx', 'October 2015 to October 2016.'),
-  S('FGR case files opened with a detainee (window)', 2017, 2019, 'FGR office, month', 'By crime', 'bases/peter_mexico_drugs/raw/fgr_opendata_archived', 'December 2017 missing.'),
-  S('FGR seizure events with detainees (window)', 2019, 2019, 'Event', '66 events, 54 detainees', 'fgr_opendata_archived/NARCOTICOSEIDF.csv', 'January to August 2019.')] },
-'6,4': { s: 'coarse', l: 'State, yearly', src: [
-  S('INEGI state police census, people handed over', 2017, 2025, 'State, year', 'By crime: simple possession, possession for sale, trade, supply', 'bases/detenciones_mx', 'Counts crimes, not people; break in 2020.'),
-  S('INEGI state prosecutor census, small-scale dealing (narcomenudeo)', 2017, 2024, 'State, year', 'People and crimes by drug and quantity range', 'code/2026/peter/data/inegi', '')] },
-'6,5': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, Esfuerzo Nacional', 2005, 2024, 'National, year', 'Drug and related federal crimes', 'informes_gobierno (page 691)', 'All federal agencies pooled.')] }
+  S('INEGI federal prosecutor census (CNPJF), people detained', 2016, 2024, 'State, year; by nationality and sex', 'Drug and related crimes; no type, no substance', 'bases/peter_mexico_drugs/raw/inegi_cnpjf', 'Not the FGR' + "'" + 's own count: it matches the Esfuerzo Nacional total of all federal agencies (12,687 against 12,685 in 2020).'),
+  S('PGR detainees by arresting authority (window)', 2015, 2016, 'State, month; sex and age', 'All federal crimes, drug subtypes; names the arresting authority', 'bases/peter_mexico_drugs/raw/pgr_detenidos_opendata', 'October 2015 to October 2016: 13,864 people, about 4,300 for drug crimes. Not charted.'),
+  S('FGR case files opened with a detainee (window)', 2017, 2019, 'FGR office, month', 'Case files, not people, by crime (drug subtypes)', 'bases/peter_mexico_drugs/raw/fgr_opendata_archived', 'December 2017 missing. Not charted.'),
+  S('FGR seizure events with detainees (window)', 2019, 2019, 'Event, month', 'Substance, grams, men and women detained', 'bases/peter_mexico_drugs/raw/fgr_opendata_archived/NARCOTICOSEIDF.csv', 'January to August 2019, 66 events. Not charted.')] },
+'6,4': { s: 'fine', l: 'Municipal, yearly', src: [
+  S('INEGI state police census (CNSPE)', 2017, 2025, 'State, year; municipal tables 2020 to 2024 (not used)', 'Drug crimes of people state police handed to a prosecutor: narcomenudeo and federal drug crimes by type; no substance', 'bases/detenciones_mx/raw', 'Counts crimes, not people. Interventions up to 2019, handovers from 2020.'),
+  S('INEGI state prosecutor census (CNPJE), narcomenudeo', 2019, 2024, 'State, year', 'People charged and crimes, by type and (from 2020) by substance; no fentanyl category', 'code/2026/peter/data/inegi', 'People charged, detained or not.')] },
+'6,5': { s: 'coarse', l: 'National, yearly', src: [S('Informe de Gobierno annex, Esfuerzo Nacional', 2000, 2024, 'National, year', 'People handed over by all federal authorities for drug crimes and related crimes', 'bases/peter_mexico_drugs/raw/informes_gobierno (6th Informe, page 691)', 'All federal agencies pooled. 2024 is January to June.')] }
 };
 
 const Y0 = 1990, Y1 = 2026;
@@ -227,6 +228,7 @@ const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls)
 const webOf = s => window.mxWebOf(s.n + ' ' + s.f);
 // Dashboards for the rows already harmonized, and the agency each column opens on
 const DASHES = { 0: ['precursors.html', 'precursors dashboard', ['army', null, null, 'fgr', null, null]],
+                 6: ['arrests.html', 'arrests dashboard', ['army', 'navy', 'federal_police_gn', 'totals', 'state_police', 'totals']],
                  1: ['eradication.html', 'eradication dashboard', ['army', 'navy', 'federal_police_gn', 'totals', null, 'totals']],
                  4: ['incineration.html', 'incineration dashboard', ['army', null, null, null, null, null]],
                  5: ['airstrips.html', 'airstrips dashboard', ['army', 'navy', null, 'fgr', null, null]],
