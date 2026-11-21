@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mexico drug arrests</title>
-<meta name="description" content="Drug-related arrests in Mexico by agency and source: people detained, drug crimes in police handovers, and people charged for narcomenudeo.">
+<meta name="description" content="Drug-related arrests in Mexico by agency and source: people detained, drug crimes in police handovers, narcomenudeo case files, and people in prison.">
 <link rel="stylesheet" href="site.css">
 <script src="web.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
@@ -36,7 +36,7 @@ window.dash = (function () {
     const load = (id, url) => d3.csv(url).then(
       rows => { store[id] = { status: 'ok', data: rows }; },
       err => { store[id] = { status: 'error', data: [] }; console.error(url, err); });
-    Promise.all([load('seizures', 'data/arrests.csv?v=2026-11-21b'), load('sources', 'data/arrests_sources.csv?v=2026-11-21b')]).then(api.all);
+    Promise.all([load('seizures', 'data/arrests.csv?v=2026-11-21c'), load('sources', 'data/arrests_sources.csv?v=2026-11-21c')]).then(api.all);
     const chart = document.getElementById('chart');
     let lastW = chart ? chart.clientWidth : 0, timer = null;
     window.addEventListener('resize', () => {
@@ -181,7 +181,7 @@ window.dash = (function () {
           <li><b>Army yearly results sheets</b><span class="mx-stepmeta">SEDENA. 2014 to 2026, 2026 in part. National total.</span></li>
           <li><b>INEGI federal prosecutor census</b><span class="mx-stepmeta">All federal agencies together, as reported by the FGR. 2016 to 2024. By state. Comparison only.</span></li>
         </ul>
-        <p class="mx-stephow">In the chart below, choose &ldquo;people detained&rdquo;.</p>
+        <p class="mx-stephow">In the chart below, choose &ldquo;Step 1: people detained&rdquo;.</p>
         </div>
       </details>
     </div>
@@ -196,7 +196,7 @@ window.dash = (function () {
           <li><b>INEGI police censuses, state and federal</b><span class="mx-stepmeta">State police: 2017 to 2025 (2025 national total only), by state and type of drug crime; up to 2019 it counted police interventions, from 2020 handovers. Guardia Nacional: 2019 to 2025, national; by type of drug crime from 2021 to 2024.</span></li>
         </ul>
         <p class="mx-stephow">It counts crimes, not people: one person can carry several.</p>
-        <p class="mx-stephow">In the chart below, choose &ldquo;crimes recorded&rdquo;.</p>
+        <p class="mx-stephow">In the chart below, choose &ldquo;Step 2: crimes in police handovers&rdquo;.</p>
         </div>
       </details>
     </div>
@@ -211,7 +211,7 @@ window.dash = (function () {
           <li><b>INEGI state prosecutor census</b><span class="mx-stepmeta">State prosecutors. 2019 to 2024. By state. Street dealing (narcomenudeo) only, by type of crime, and by drug from 2020. Counts crimes, and people named as suspects, arrested or not.</span></li>
         </ul>
         <p class="mx-stephow">Federal prosecutor (FGR) case files: we hold only 2017 to 2019, so they are not charted.</p>
-        <p class="mx-stephow">In the chart below, choose &ldquo;people charged&rdquo; (or &ldquo;crimes recorded&rdquo; for its crimes).</p>
+        <p class="mx-stephow">In the chart below, choose &ldquo;Step 3: people named in case files&rdquo; or &ldquo;Step 3: crimes in case files&rdquo;.</p>
         </div>
       </details>
     </div>
@@ -226,7 +226,7 @@ window.dash = (function () {
           <li><b>INEGI prison censuses, state and federal</b><span class="mx-stepmeta">Same layout. State prisons: 2020 to 2024, by state; from 2022, waiting for trial is split into mandatory and justified pretrial detention. Federal prisons: 2019 to 2024, national. Both: waiting for trial or sentenced.</span></li>
         </ul>
         <p class="mx-stephow">It counts the drug crimes of the people held at the end of each year.</p>
-        <p class="mx-stephow">In the chart below, choose &ldquo;people in prison&rdquo;.</p>
+        <p class="mx-stephow">In the chart below, choose &ldquo;Step 4: people in prison&rdquo;.</p>
         </div>
       </details>
     </div>
@@ -292,7 +292,7 @@ window.dash = (function () {
     <summary>How to read the sources</summary>
     <p>People detained: the army and the navy report the people they detained in the fight against drug trafficking (Informe de Gobierno annex; the army also in its yearly sheets). The Esfuerzo Nacional total adds all federal agencies and includes related crimes (firearms, organized crime, precursors). The FGR's INEGI census gives the same all-agency total by state. These counts say nothing about the drug or the place below the state.</p>
     <p>Drug crimes in police handovers: INEGI's police censuses record, for the people the state police and the Guardia Nacional hand to a prosecutor, each crime they are suspected of: narcomenudeo (local dealing: simple possession, possession for sale, trade, supply) and federal drug crimes (production, transport, trafficking and others). They count crimes, not people, and do not name the drug. For state police, the census counted interventions up to 2019 and handovers from 2020.</p>
-    <p>People charged: INEGI's state prosecutor census counts the people in narcomenudeo case files, detained or not, by type of crime and, from 2020, by substance. It has no fentanyl category.</p>
+    <p>People named in case files: INEGI's state prosecutor census counts the people named as suspects in narcomenudeo case files, arrested or not, by type of crime and, from 2020, by substance. It has no fentanyl category.</p>
     <p>People in prison: INEGI's prison censuses count the drug crimes of the people held at the end of each year, by legal status. Without sentence is split, from 2022 and only in state prisons, into mandatory pretrial detention (prisión preventiva oficiosa), justified pretrial detention (justificada) and other; federal prisons leave that split empty. Narcomenudeo and federal drug crimes, state prisons by state (2020 to 2024), federal prisons national (2019 to 2024).</p>
     <p>Not charted, too short: PGR detainees by arresting authority (October 2015 to October 2016), FGR case files opened with a detainee (2017 to 2019) and FGR seizure events with detainees (January to August 2019); see what data exists. None of the transparency answers of the army, navy, Federal Police or Guardia Nacional has a field for people detained.</p>
     <p>Download the data: <a href="data/arrests.csv">arrests.csv</a> and <a href="data/arrests_sources.csv">arrests_sources.csv</a>.</p>
@@ -303,10 +303,21 @@ window.dash = (function () {
 // Fixed labels and references known when the page was written (not data)
 window.MX_LABELS = {
   drug: { drug_and_related: 'Drug and related crimes, all', drug_all: 'All drug crimes', narcomenudeo: 'Narcomenudeo (local dealing), all', nm_simple_possession: 'Narcomenudeo: simple possession', nm_possession_for_sale: 'Narcomenudeo: possession for sale or supply', nm_trade: 'Narcomenudeo: trade', nm_supply: 'Narcomenudeo: supply', nm_other: 'Narcomenudeo: other', nm_unspecified: 'Narcomenudeo: not specified', federal_drug: 'Federal drug crimes, all', fd_production: 'Federal drug crimes: production', fd_transport: 'Federal drug crimes: transport', fd_trafficking: 'Federal drug crimes: trafficking', fd_trade: 'Federal drug crimes: trade', fd_supply: 'Federal drug crimes: supply', fd_possession: 'Federal drug crimes: possession', fd_other: 'Federal drug crimes: other', fd_unspecified: 'Federal drug crimes: not specified', nmd_meth: 'Narcomenudeo with methamphetamine', nmd_marijuana: 'Narcomenudeo with marijuana', nmd_cocaine: 'Narcomenudeo with cocaine', nmd_heroin: 'Narcomenudeo with heroin', nmd_opium: 'Narcomenudeo with opium', nmd_mdma: 'Narcomenudeo with MDMA', nmd_mda: 'Narcomenudeo with MDA', nmd_lsd: 'Narcomenudeo with LSD', nmd_unspecified: 'Narcomenudeo, substance not specified', pr_drug_all: 'All drug crimes: all held', pr_drug_unsentenced: 'All drug crimes: held without sentence', pr_drug_oficiosa: 'All drug crimes: mandatory pretrial detention (oficiosa)', pr_drug_justificada: 'All drug crimes: justified pretrial detention', pr_drug_other: 'All drug crimes: without sentence, other or not identified', pr_drug_sentenced: 'All drug crimes: sentenced', pr_nm_all: 'Narcomenudeo: all held', pr_nm_unsentenced: 'Narcomenudeo: held without sentence', pr_nm_oficiosa: 'Narcomenudeo: mandatory pretrial detention (oficiosa)', pr_nm_justificada: 'Narcomenudeo: justified pretrial detention', pr_nm_other: 'Narcomenudeo: without sentence, other or not identified', pr_nm_sentenced: 'Narcomenudeo: sentenced', pr_fd_all: 'Federal drug crimes: all held', pr_fd_unsentenced: 'Federal drug crimes: held without sentence', pr_fd_oficiosa: 'Federal drug crimes: mandatory pretrial detention (oficiosa)', pr_fd_justificada: 'Federal drug crimes: justified pretrial detention', pr_fd_other: 'Federal drug crimes: without sentence, other or not identified', pr_fd_sentenced: 'Federal drug crimes: sentenced' },
-  unit: { people: 'people detained', crimes: 'crimes recorded', people_charged: 'people charged', prison: 'people in prison (counted by crime)' },
-  unitShort: { people: 'people', crimes: 'crimes', people_charged: 'people charged', prison: 'crimes of people in prison' },
-  unitOrder: ['people', 'crimes', 'people_charged', 'prison'],
-  unitHelp: { people: 'People the army and the navy say they detained in their fight against drug trafficking, national and yearly; all federal agencies as comparison.', crimes: 'Drug crimes recorded when the police handed people to a prosecutor (state police by state, Guardia Nacional national), and narcomenudeo crimes in state prosecutors\' files. One person can carry several crimes.', people_charged: 'People charged by state prosecutors for narcomenudeo, detained or not, by type of crime and by drug.', prison: 'Drug crimes of the people held in prison at the end of each year, by legal status: without sentence (mandatory or justified pretrial detention) or sentenced.' },
+  unit: { people: 'people detained', crimes: 'crimes in police handovers', people_charged: 'people named in case files', case_crimes: 'crimes in case files', prison: 'people in prison (counted by crime)' },
+  unitOption: { people: 'Step 1: people detained', crimes: 'Step 2: crimes in police handovers', people_charged: 'Step 3: people named in case files', case_crimes: 'Step 3: crimes in case files', prison: 'Step 4: people in prison (counted by crime)' },
+  unitShort: { people: 'people', crimes: 'crimes', people_charged: 'people named', case_crimes: 'crimes', prison: 'crimes of people in prison' },
+  unitOrder: ['people', 'crimes', 'people_charged', 'case_crimes', 'prison'],
+  unitHelp: { people: 'People the army and the navy say they detained in their fight against drug trafficking, national and yearly; all federal agencies as comparison.', crimes: 'Drug crimes recorded when the police handed people to a prosecutor: state police by state, Guardia Nacional national. One person can carry several crimes.', people_charged: 'People named as suspects in state prosecutors\' narcomenudeo case files, arrested or not, by type of crime and by drug.', case_crimes: 'Narcomenudeo crimes in state prosecutors\' case files, by type of crime and by drug. One person can carry several crimes.', prison: 'Drug crimes of the people held in prison at the end of each year, by legal status: without sentence (mandatory or justified pretrial detention) or sentenced.' },
+  // second list: groups in a fixed order, "other" and "not specified" last
+  drugGroups: [
+    ['Totals', ['drug_and_related', 'drug_all', 'narcomenudeo', 'federal_drug']],
+    ['Narcomenudeo by type', ['nm_trade', 'nm_supply', 'nm_possession_for_sale', 'nm_simple_possession', 'nm_other', 'nm_unspecified']],
+    ['Federal drug crimes by type', ['fd_production', 'fd_transport', 'fd_trafficking', 'fd_trade', 'fd_supply', 'fd_possession', 'fd_other', 'fd_unspecified']],
+    ['Narcomenudeo by drug', ['nmd_meth', 'nmd_marijuana', 'nmd_cocaine', 'nmd_heroin', 'nmd_opium', 'nmd_mdma', 'nmd_mda', 'nmd_lsd', 'nmd_unspecified']],
+    ['All drug crimes, by legal status', ['pr_drug_all', 'pr_drug_sentenced', 'pr_drug_unsentenced', 'pr_drug_oficiosa', 'pr_drug_justificada', 'pr_drug_other']],
+    ['Narcomenudeo, by legal status', ['pr_nm_all', 'pr_nm_sentenced', 'pr_nm_unsentenced', 'pr_nm_oficiosa', 'pr_nm_justificada', 'pr_nm_other']],
+    ['Federal drug crimes, by legal status', ['pr_fd_all', 'pr_fd_sentenced', 'pr_fd_unsentenced', 'pr_fd_oficiosa', 'pr_fd_justificada', 'pr_fd_other']]
+  ],
   register: { army: 'SEDENA (army)', navy: 'SEMAR (navy)', federal_police_gn: 'Federal Police and Guardia Nacional', fgr: 'FGR (federal prosecutors)', state_police: 'State police', state_prosecutors: 'State prosecutors', state_prisons: 'State prisons', federal_prisons: 'Federal prisons', totals: 'Totals and compiled files' },
   registerOrder: ['army', 'navy', 'federal_police_gn', 'state_police', 'state_prosecutors', 'state_prisons', 'federal_prisons', 'totals'],
   agencyOrder: ['SEDENA', 'SEMAR', 'Federal Police', 'Guardia Nacional', 'FGR', 'State police', 'State prosecutors', 'All federal agencies', 'All agencies', 'State prisons', 'Federal prisons'],
@@ -399,7 +410,7 @@ window.MX = (function () {
     const e = encodeURIComponent;
     return 'source_id=' + e(p.source_id) + '&agency=' + e(p.agency) + '&place=' + e(p.place) + '&year=' + p.year + '&drug=' + e(p.drug) + '&unit=' + e(p.unit);
   }
-  const fmt = v => v === null || v === undefined || !isFinite(v) ? '' : ['people', 'crimes', 'people_charged', 'prison'].includes(window.MX_STATE.unit) ? d3.format(',.0f')(v) : (Math.abs(v) >= 100 ? d3.format(',.0f')(v) : Math.abs(v) >= 1 ? d3.format(',.1f')(v) : d3.format(',.2~f')(v));
+  const fmt = v => v === null || v === undefined || !isFinite(v) ? '' : ['people', 'crimes', 'people_charged', 'case_crimes', 'prison'].includes(window.MX_STATE.unit) ? d3.format(',.0f')(v) : (Math.abs(v) >= 100 ? d3.format(',.0f')(v) : Math.abs(v) >= 1 ? d3.format(',.1f')(v) : d3.format(',.2~f')(v));
   return { rows, sources, status, lines, shown, where, fmt };
 })();
 
@@ -443,13 +454,18 @@ dash.draw('register-select', sel => {
 dash.draw('drug-select', sel => {
   const R = window.MX.rows(), st = window.MX_STATE, L = window.MX_LABELS;
   if (!R) { sel.replaceChildren(new Option('Loading', '')); return; }
-  const top = ['drug_and_related', 'drug_all', 'narcomenudeo', 'federal_drug', 'nmd_meth', 'nmd_marijuana', 'nmd_cocaine', 'nmd_heroin', 'nmd_opium', 'nmd_mdma', 'nmd_mda', 'nmd_lsd', 'nmd_unspecified',
-    ...['drug', 'nm', 'fd'].flatMap(c => ['all', 'unsentenced', 'oficiosa', 'justificada', 'other', 'sentenced'].map(k => 'pr_' + c + '_' + k))];
-  // only what exists for the chosen count
-  const all = [...new Set(R.filter(r => r.unit === st.unit).map(r => r.drug))];
-  const rest = all.filter(d => !top.includes(d)).sort((a, b) => (L.drug[a] || a).localeCompare(L.drug[b] || b));
-  sel.replaceChildren(...top.filter(d => all.includes(d)).concat(rest).map(d => new Option(L.drug[d] || d, d)));
-  if (!all.includes(st.drug)) st.drug = all[0];
+  const all = new Set(R.filter(r => r.unit === st.unit).map(r => r.drug));
+  const listed = new Set(L.drugGroups.flatMap(g => g[1]));
+  const groups = L.drugGroups.map(([name, items]) => [name, items.filter(d => all.has(d))]).filter(g => g[1].length);
+  const rest = [...all].filter(d => !listed.has(d)).sort();
+  if (rest.length) groups.push(['Other', rest]);
+  sel.replaceChildren(...groups.map(([name, items]) => {
+    const og = document.createElement('optgroup');
+    og.label = name;
+    og.append(...items.map(d => new Option(L.drug[d] || d, d)));
+    return og;
+  }));
+  if (!all.has(st.drug)) st.drug = groups[0][1][0];
   sel.value = st.drug;
   sel.onchange = () => { st.drug = sel.value; window.mxRedraw(); };
 });
@@ -459,7 +475,7 @@ dash.draw('unit-select', sel => {
   const present = new Set(R.map(r => r.unit));
   const units = L.unitOrder.filter(u => present.has(u));
   if (!units.includes(st.unit)) st.unit = units[0];
-  sel.replaceChildren(...units.map(u => new Option(L.unit[u] || u, u)));
+  sel.replaceChildren(...units.map(u => new Option(L.unitOption[u] || u, u)));
   sel.value = st.unit;
   sel.onchange = () => { st.unit = sel.value; st.off = {}; dash.draw('drug-select'); dash.draw('unit-help'); window.mxRedraw(); };
 });
@@ -540,7 +556,7 @@ dash.draw('chart', {
     const status = window.MX.status();
     if (status !== 'ok') { say(status === 'error' ? 'Failed to load' : 'Loading'); return; }
     const ls = window.MX.shown().map(l => Object.assign({}, l, { points: l.points.filter(p => !p.flag) })).filter(l => l.points.length);
-    if (!ls.length) { say(window.MX.lines().length ? 'All lines are hidden. Click a name above to show it.' : 'No source reports this choice in this unit and place. Try another unit (people detained, crimes recorded, people charged), another place, or the other view.'); return; }
+    if (!ls.length) { say(window.MX.lines().length ? 'All lines are hidden. Click a name above to show it.' : 'No source reports this choice in this unit and place. Try another count, another place, or the other view.'); return; }
     const W = Math.max(300, el.clientWidth || el.getBoundingClientRect().width || 700), H = 340;
     const all = ls.flatMap(l => l.points);
     const x0 = Math.min(d3.min(all, p => p.year), 2017), x1 = Math.max(d3.max(all, p => p.year), 2024);
