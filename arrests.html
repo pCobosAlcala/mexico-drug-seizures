@@ -36,7 +36,7 @@ window.dash = (function () {
     const load = (id, url) => d3.csv(url).then(
       rows => { store[id] = { status: 'ok', data: rows }; },
       err => { store[id] = { status: 'error', data: [] }; console.error(url, err); });
-    Promise.all([load('seizures', 'data/arrests.csv?v=2026-11-21c'), load('sources', 'data/arrests_sources.csv?v=2026-11-21c')]).then(api.all);
+    Promise.all([load('seizures', 'data/arrests.csv?v=2026-11-21d'), load('sources', 'data/arrests_sources.csv?v=2026-11-21d')]).then(api.all);
     const chart = document.getElementById('chart');
     let lastW = chart ? chart.clientWidth : 0, timer = null;
     window.addEventListener('resize', () => {
@@ -204,13 +204,13 @@ window.dash = (function () {
     <div class="mx-step">
       <div class="mx-stepbox"><b>Case file opened</b><span>prosecutor names a suspect</span></div>
       <details class="mx-stepsrc">
-        <summary><b>State prosecutors</b><span>which crime and which drug</span><span class="mx-stepmore"><span class="mx-caret" aria-hidden="true">&#9656;</span> 1 source, who reports them</span></summary>
+        <summary><b>Prosecutors</b><span>which crime; which drug for state cases</span><span class="mx-stepmore"><span class="mx-caret" aria-hidden="true">&#9656;</span> 2 sources, who reports them</span></summary>
         <div class="mx-stepbody">
-        <p>Reported by: the state prosecutor&rsquo;s office of each state.</p>
+        <p>Reported by: the state prosecutor&rsquo;s office of each state, and the federal prosecutor (FGR).</p>
         <ul>
           <li><b>INEGI state prosecutor census</b><span class="mx-stepmeta">State prosecutors. 2019 to 2024. By state. Street dealing (narcomenudeo) only, by type of crime, and by drug from 2020. Counts crimes, and people named as suspects, arrested or not.</span></li>
+          <li><b>INEGI federal prosecutor census</b><span class="mx-stepmeta">Federal prosecutor (FGR). 2019 to 2024. National. Narcomenudeo and federal drug crimes, by type of crime; no split by drug. Counts crimes only, in the new (accusatory) system&rsquo;s case files.</span></li>
         </ul>
-        <p class="mx-stephow">Federal prosecutor (FGR) case files: we hold only 2017 to 2019, so they are not charted.</p>
         <p class="mx-stephow">In the chart below, choose &ldquo;Step 3: people named in case files&rdquo; or &ldquo;Step 3: crimes in case files&rdquo;.</p>
         </div>
       </details>
@@ -307,7 +307,7 @@ window.MX_LABELS = {
   unitOption: { people: 'Step 1: people detained', crimes: 'Step 2: crimes in police handovers', people_charged: 'Step 3: people named in case files', case_crimes: 'Step 3: crimes in case files', prison: 'Step 4: people in prison (counted by crime)' },
   unitShort: { people: 'people', crimes: 'crimes', people_charged: 'people named', case_crimes: 'crimes', prison: 'crimes of people in prison' },
   unitOrder: ['people', 'crimes', 'people_charged', 'case_crimes', 'prison'],
-  unitHelp: { people: 'People the army and the navy say they detained in their fight against drug trafficking, national and yearly; all federal agencies as comparison.', crimes: 'Drug crimes recorded when the police handed people to a prosecutor: state police by state, Guardia Nacional national. One person can carry several crimes.', people_charged: 'People named as suspects in state prosecutors\' narcomenudeo case files, arrested or not, by type of crime and by drug.', case_crimes: 'Narcomenudeo crimes in state prosecutors\' case files, by type of crime and by drug. One person can carry several crimes.', prison: 'Drug crimes of the people held in prison at the end of each year, by legal status: without sentence (mandatory or justified pretrial detention) or sentenced.' },
+  unitHelp: { people: 'People the army and the navy say they detained in their fight against drug trafficking, national and yearly; all federal agencies as comparison.', crimes: 'Drug crimes recorded when the police handed people to a prosecutor: state police by state, Guardia Nacional national. One person can carry several crimes.', people_charged: 'People named as suspects in state prosecutors\' narcomenudeo case files, arrested or not, by type of crime and by drug.', case_crimes: 'Drug crimes in prosecutors\' case files: state prosecutors by state (narcomenudeo only, by type and by drug), and the federal prosecutor (FGR) national (narcomenudeo and federal drug crimes, by type). One person can carry several crimes.', prison: 'Drug crimes of the people held in prison at the end of each year, by legal status: without sentence (mandatory or justified pretrial detention) or sentenced.' },
   // second list: groups in a fixed order, "other" and "not specified" last
   drugGroups: [
     ['Totals', ['drug_and_related', 'drug_all', 'narcomenudeo', 'federal_drug']],
@@ -318,9 +318,9 @@ window.MX_LABELS = {
     ['Narcomenudeo, by legal status', ['pr_nm_all', 'pr_nm_sentenced', 'pr_nm_unsentenced', 'pr_nm_oficiosa', 'pr_nm_justificada', 'pr_nm_other']],
     ['Federal drug crimes, by legal status', ['pr_fd_all', 'pr_fd_sentenced', 'pr_fd_unsentenced', 'pr_fd_oficiosa', 'pr_fd_justificada', 'pr_fd_other']]
   ],
-  register: { army: 'SEDENA (army)', navy: 'SEMAR (navy)', federal_police_gn: 'Federal Police and Guardia Nacional', fgr: 'FGR (federal prosecutors)', state_police: 'State police', state_prosecutors: 'State prosecutors', state_prisons: 'State prisons', federal_prisons: 'Federal prisons', totals: 'Totals and compiled files' },
-  registerOrder: ['army', 'navy', 'federal_police_gn', 'state_police', 'state_prosecutors', 'state_prisons', 'federal_prisons', 'totals'],
-  agencyOrder: ['SEDENA', 'SEMAR', 'Federal Police', 'Guardia Nacional', 'FGR', 'State police', 'State prosecutors', 'All federal agencies', 'All agencies', 'State prisons', 'Federal prisons'],
+  register: { army: 'SEDENA (army)', navy: 'SEMAR (navy)', federal_police_gn: 'Federal Police and Guardia Nacional', fgr: 'FGR (federal prosecutors)', state_police: 'State police', state_prosecutors: 'State prosecutors', federal_prosecutors: 'Federal prosecutor (FGR)', state_prisons: 'State prisons', federal_prisons: 'Federal prisons', totals: 'Totals and compiled files' },
+  registerOrder: ['army', 'navy', 'federal_police_gn', 'state_police', 'state_prosecutors', 'federal_prosecutors', 'state_prisons', 'federal_prisons', 'totals'],
+  agencyOrder: ['SEDENA', 'SEMAR', 'Federal Police', 'Guardia Nacional', 'FGR', 'State police', 'State prosecutors', 'Federal prosecutor (FGR)', 'All federal agencies', 'All agencies', 'State prisons', 'Federal prisons'],
   // columns of Alejandro's compiled file, by the agency they belong to
   compiledAgency: { SEDENA: ['army', 'SEDENA'], GN: ['federal_police_gn', 'Guardia Nacional'], FGR: ['fgr', 'FGR'] },
   place: { '00': 'National', '01': 'Aguascalientes', '02': 'Baja California', '03': 'Baja California Sur', '04': 'Campeche', '05': 'Coahuila', '06': 'Colima', '07': 'Chiapas', '08': 'Chihuahua', '09': 'Mexico City', '10': 'Durango', '11': 'Guanajuato', '12': 'Guerrero', '13': 'Hidalgo', '14': 'Jalisco', '15': 'State of Mexico', '16': 'Michoacán', '17': 'Morelos', '18': 'Nayarit', '19': 'Nuevo León', '20': 'Oaxaca', '21': 'Puebla', '22': 'Querétaro', '23': 'Quintana Roo', '24': 'San Luis Potosí', '25': 'Sinaloa', '26': 'Sonora', '27': 'Tabasco', '28': 'Tamaulipas', '29': 'Tlaxcala', '30': 'Veracruz', '31': 'Yucatán', '32': 'Zacatecas', '99': 'State not identified' }
