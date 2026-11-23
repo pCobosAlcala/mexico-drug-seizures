@@ -36,7 +36,7 @@ window.dash = (function () {
     const load = (id, url) => d3.csv(url).then(
       rows => { store[id] = { status: 'ok', data: rows }; },
       err => { store[id] = { status: 'error', data: [] }; console.error(url, err); });
-    Promise.all([load('seizures', 'data/arrests.csv?v=2026-11-21d'), load('sources', 'data/arrests_sources.csv?v=2026-11-21d')]).then(api.all);
+    Promise.all([load('seizures', 'data/arrests.csv?v=2026-11-23a'), load('sources', 'data/arrests_sources.csv?v=2026-11-23a')]).then(api.all);
     const chart = document.getElementById('chart');
     let lastW = chart ? chart.clientWidth : 0, timer = null;
     window.addEventListener('resize', () => {
@@ -164,11 +164,11 @@ window.dash = (function () {
 <div class="mx">
   <header id="top">
     <h1 class="mx-title">Mexico drug arrests by source</h1>
-    <p class="mx-intro">Arrests that can be tied to drugs, from every source we hold. A person caught with drugs can go through four steps, and a different office counts each one, so the numbers never match and are never added. Below the steps, pick what to count, then the crime, drug or legal status.</p>
+    <p class="mx-intro">Arrests that can be tied to drugs, from every source we hold. A person caught with drugs can go through five steps, and a different office counts each one, so the numbers never match and are never added. Below the steps, pick what to count, then the crime, drug or legal status.</p>
   </header>
 
   <section id="steps-sec" aria-labelledby="steps-title">
-    <h2 class="mx-h2" id="steps-title">Four steps after a drug arrest, and who counts each</h2>
+    <h2 class="mx-h2" id="steps-title">Five steps after a drug arrest, and who counts each</h2>
     <div class="mx-stepshead" aria-hidden="true"><span>What happens</span><span>Who counts it, and what they say. Click to see the sources.</span></div>
     <div class="mx-step">
       <div class="mx-stepbox"><b>Caught</b><span>by soldiers, marines or police</span></div>
@@ -227,6 +227,21 @@ window.dash = (function () {
         </ul>
         <p class="mx-stephow">It counts the drug crimes of the people held at the end of each year.</p>
         <p class="mx-stephow">In the chart below, choose &ldquo;Step 4: people in prison&rdquo;.</p>
+        </div>
+      </details>
+    </div>
+    <div class="mx-step mx-steparrow" aria-hidden="true"><span>&#8595;</span></div>
+    <div class="mx-step">
+      <div class="mx-stepbox"><b>Judged</b><span>a judge convicts or acquits</span></div>
+      <details class="mx-stepsrc">
+        <summary><b>Federal courts</b><span>which crime and which drug</span><span class="mx-stepmore"><span class="mx-caret" aria-hidden="true">&#9656;</span> 1 source, who reports them</span></summary>
+        <div class="mx-stepbody">
+        <p>Reported by: the federal judges, on the federal judiciary&rsquo;s open-justice portal.</p>
+        <ul>
+          <li><b>Federal judiciary open data (CJPF)</b><span class="mx-stepmeta">Federal courts. 2016 to 2026, 2026 in part; the first years are thin while publication ramped up. By state of the court. People convicted, by article of the law; and rulings, by the drug named in the summary of facts (a lower bound). New (accusatory) court system only.</span></li>
+        </ul>
+        <p class="mx-stephow">State courts, where most narcomenudeo is judged, are not here yet. INEGI&rsquo;s state court census has them.</p>
+        <p class="mx-stephow">In the chart below, choose &ldquo;Step 5: people convicted (federal courts)&rdquo; or &ldquo;Step 5: federal drug rulings, by drug named&rdquo;.</p>
         </div>
       </details>
     </div>
@@ -302,15 +317,19 @@ window.dash = (function () {
 <script>
 // Fixed labels and references known when the page was written (not data)
 window.MX_LABELS = {
-  drug: { drug_and_related: 'Drug and related crimes, all', drug_all: 'All drug crimes', narcomenudeo: 'Narcomenudeo (local dealing), all', nm_simple_possession: 'Narcomenudeo: simple possession', nm_possession_for_sale: 'Narcomenudeo: possession for sale or supply', nm_trade: 'Narcomenudeo: trade', nm_supply: 'Narcomenudeo: supply', nm_other: 'Narcomenudeo: other', nm_unspecified: 'Narcomenudeo: not specified', federal_drug: 'Federal drug crimes, all', fd_production: 'Federal drug crimes: production', fd_transport: 'Federal drug crimes: transport', fd_trafficking: 'Federal drug crimes: trafficking', fd_trade: 'Federal drug crimes: trade', fd_supply: 'Federal drug crimes: supply', fd_possession: 'Federal drug crimes: possession', fd_other: 'Federal drug crimes: other', fd_unspecified: 'Federal drug crimes: not specified', nmd_meth: 'Narcomenudeo with methamphetamine', nmd_marijuana: 'Narcomenudeo with marijuana', nmd_cocaine: 'Narcomenudeo with cocaine', nmd_heroin: 'Narcomenudeo with heroin', nmd_opium: 'Narcomenudeo with opium', nmd_mdma: 'Narcomenudeo with MDMA', nmd_mda: 'Narcomenudeo with MDA', nmd_lsd: 'Narcomenudeo with LSD', nmd_unspecified: 'Narcomenudeo, substance not specified', pr_drug_all: 'All drug crimes: all held', pr_drug_unsentenced: 'All drug crimes: held without sentence', pr_drug_oficiosa: 'All drug crimes: mandatory pretrial detention (oficiosa)', pr_drug_justificada: 'All drug crimes: justified pretrial detention', pr_drug_other: 'All drug crimes: without sentence, other or not identified', pr_drug_sentenced: 'All drug crimes: sentenced', pr_nm_all: 'Narcomenudeo: all held', pr_nm_unsentenced: 'Narcomenudeo: held without sentence', pr_nm_oficiosa: 'Narcomenudeo: mandatory pretrial detention (oficiosa)', pr_nm_justificada: 'Narcomenudeo: justified pretrial detention', pr_nm_other: 'Narcomenudeo: without sentence, other or not identified', pr_nm_sentenced: 'Narcomenudeo: sentenced', pr_fd_all: 'Federal drug crimes: all held', pr_fd_unsentenced: 'Federal drug crimes: held without sentence', pr_fd_oficiosa: 'Federal drug crimes: mandatory pretrial detention (oficiosa)', pr_fd_justificada: 'Federal drug crimes: justified pretrial detention', pr_fd_other: 'Federal drug crimes: without sentence, other or not identified', pr_fd_sentenced: 'Federal drug crimes: sentenced' },
-  unit: { people: 'people detained', crimes: 'crimes in police handovers', people_charged: 'people named in case files', case_crimes: 'crimes in case files', prison: 'people in prison (counted by crime)' },
-  unitOption: { people: 'Step 1: people detained', crimes: 'Step 2: crimes in police handovers', people_charged: 'Step 3: people named in case files', case_crimes: 'Step 3: crimes in case files', prison: 'Step 4: people in prison (counted by crime)' },
-  unitShort: { people: 'people', crimes: 'crimes', people_charged: 'people named', case_crimes: 'crimes', prison: 'crimes of people in prison' },
-  unitOrder: ['people', 'crimes', 'people_charged', 'case_crimes', 'prison'],
-  unitHelp: { people: 'People the army and the navy say they detained in their fight against drug trafficking, national and yearly; all federal agencies as comparison.', crimes: 'Drug crimes recorded when the police handed people to a prosecutor: state police by state, Guardia Nacional national. One person can carry several crimes.', people_charged: 'People named as suspects in state prosecutors\' narcomenudeo case files, arrested or not, by type of crime and by drug.', case_crimes: 'Drug crimes in prosecutors\' case files: state prosecutors by state (narcomenudeo only, by type and by drug), and the federal prosecutor (FGR) national (narcomenudeo and federal drug crimes, by type). One person can carry several crimes.', prison: 'Drug crimes of the people held in prison at the end of each year, by legal status: without sentence (mandatory or justified pretrial detention) or sentenced.' },
+  drug: { drug_and_related: 'Drug and related crimes, all', drug_all: 'All drug crimes', narcomenudeo: 'Narcomenudeo (local dealing), all', nm_simple_possession: 'Narcomenudeo: simple possession', nm_possession_for_sale: 'Narcomenudeo: possession for sale or supply', nm_trade: 'Narcomenudeo: trade', nm_supply: 'Narcomenudeo: supply', nm_other: 'Narcomenudeo: other', nm_unspecified: 'Narcomenudeo: not specified', federal_drug: 'Federal drug crimes, all', fd_production: 'Federal drug crimes: production', fd_transport: 'Federal drug crimes: transport', fd_trafficking: 'Federal drug crimes: trafficking', fd_trade: 'Federal drug crimes: trade', fd_supply: 'Federal drug crimes: supply', fd_possession: 'Federal drug crimes: possession', fd_other: 'Federal drug crimes: other', fd_unspecified: 'Federal drug crimes: not specified', nmd_meth: 'Narcomenudeo with methamphetamine', nmd_marijuana: 'Narcomenudeo with marijuana', nmd_cocaine: 'Narcomenudeo with cocaine', nmd_heroin: 'Narcomenudeo with heroin', nmd_opium: 'Narcomenudeo with opium', nmd_mdma: 'Narcomenudeo with MDMA', nmd_mda: 'Narcomenudeo with MDA', nmd_lsd: 'Narcomenudeo with LSD', fc_194: 'Federal: production, transport, trafficking, trade or supply (CPF art. 194)', fc_195: 'Federal: possession for those ends (CPF art. 195)', fc_195bis: 'Federal: possession without those ends (CPF art. 195 bis)', fc_196ter: 'Federal: precursors and equipment (CPF art. 196 ter)', fc_198: 'Federal: farming (CPF art. 198)', nmc_475: 'Narcomenudeo: trade or supply (LGS art. 475)', nmc_476: 'Narcomenudeo: possession for trade or supply (LGS art. 476)', nmc_477: 'Narcomenudeo: simple possession (LGS art. 477)', cj_other: 'Other or unclear article', rul_all: 'All drug rulings', rul_meth: 'Rulings naming methamphetamine', rul_marijuana: 'Rulings naming marijuana', rul_cocaine: 'Rulings naming cocaine', rul_fentanyl: 'Rulings naming fentanyl', rul_heroin: 'Rulings naming heroin', rul_opium: 'Rulings naming opium or poppy', rul_pharma: 'Rulings naming prescription drugs (clonazepam and similar)', rul_unnamed: 'Rulings naming no drug', nmd_unspecified: 'Narcomenudeo, substance not specified', pr_drug_all: 'All drug crimes: all held', pr_drug_unsentenced: 'All drug crimes: held without sentence', pr_drug_oficiosa: 'All drug crimes: mandatory pretrial detention (oficiosa)', pr_drug_justificada: 'All drug crimes: justified pretrial detention', pr_drug_other: 'All drug crimes: without sentence, other or not identified', pr_drug_sentenced: 'All drug crimes: sentenced', pr_nm_all: 'Narcomenudeo: all held', pr_nm_unsentenced: 'Narcomenudeo: held without sentence', pr_nm_oficiosa: 'Narcomenudeo: mandatory pretrial detention (oficiosa)', pr_nm_justificada: 'Narcomenudeo: justified pretrial detention', pr_nm_other: 'Narcomenudeo: without sentence, other or not identified', pr_nm_sentenced: 'Narcomenudeo: sentenced', pr_fd_all: 'Federal drug crimes: all held', pr_fd_unsentenced: 'Federal drug crimes: held without sentence', pr_fd_oficiosa: 'Federal drug crimes: mandatory pretrial detention (oficiosa)', pr_fd_justificada: 'Federal drug crimes: justified pretrial detention', pr_fd_other: 'Federal drug crimes: without sentence, other or not identified', pr_fd_sentenced: 'Federal drug crimes: sentenced' },
+  unit: { people: 'people detained', crimes: 'crimes in police handovers', people_charged: 'people named in case files', case_crimes: 'crimes in case files', prison: 'people in prison (counted by crime)', people_convicted: 'people convicted (federal courts)', rulings: 'federal drug rulings' },
+  unitOption: { people: 'Step 1: people detained', crimes: 'Step 2: crimes in police handovers', people_charged: 'Step 3: people named in case files', case_crimes: 'Step 3: crimes in case files', prison: 'Step 4: people in prison (counted by crime)', people_convicted: 'Step 5: people convicted (federal courts)', rulings: 'Step 5: federal drug rulings, by drug named' },
+  unitShort: { people: 'people', crimes: 'crimes', people_charged: 'people named', case_crimes: 'crimes', prison: 'crimes of people in prison', people_convicted: 'people convicted', rulings: 'rulings' },
+  unitOrder: ['people', 'crimes', 'people_charged', 'case_crimes', 'prison', 'people_convicted', 'rulings'],
+  unitHelp: { people: 'People the army and the navy say they detained in their fight against drug trafficking, national and yearly; all federal agencies as comparison.', crimes: 'Drug crimes recorded when the police handed people to a prosecutor: state police by state, Guardia Nacional national. One person can carry several crimes.', people_charged: 'People named as suspects in state prosecutors\' narcomenudeo case files, arrested or not, by type of crime and by drug.', case_crimes: 'Drug crimes in prosecutors\' case files: state prosecutors by state (narcomenudeo only, by type and by drug), and the federal prosecutor (FGR) national (narcomenudeo and federal drug crimes, by type). One person can carry several crimes.', prison: 'Drug crimes of the people held in prison at the end of each year, by legal status: without sentence (mandatory or justified pretrial detention) or sentenced.', people_convicted: 'People convicted of drug crimes in first-instance federal sentences, by article of the law and by state of the court. A person convicted under two articles counts under each. Federal courts only.', rulings: 'First-instance federal drug rulings, any outcome, by the drug named in the summary of facts. A ruling naming two drugs counts under both; each drug is a lower bound.' },
   // second list: groups in a fixed order, "other" and "not specified" last
   drugGroups: [
-    ['Totals', ['drug_and_related', 'drug_all', 'narcomenudeo', 'federal_drug']],
+    ['Totals', ['drug_and_related', 'drug_all', 'narcomenudeo', 'federal_drug', 'rul_all']],
+    ['Federal drug crimes by article', ['fc_194', 'fc_195', 'fc_195bis', 'fc_196ter', 'fc_198']],
+    ['Narcomenudeo by article', ['nmc_475', 'nmc_476', 'nmc_477']],
+    ['Other', ['cj_other']],
+    ['By drug named in the ruling', ['rul_meth', 'rul_marijuana', 'rul_cocaine', 'rul_fentanyl', 'rul_heroin', 'rul_opium', 'rul_pharma', 'rul_unnamed']],
     ['Narcomenudeo by type', ['nm_trade', 'nm_supply', 'nm_possession_for_sale', 'nm_simple_possession', 'nm_other', 'nm_unspecified']],
     ['Federal drug crimes by type', ['fd_production', 'fd_transport', 'fd_trafficking', 'fd_trade', 'fd_supply', 'fd_possession', 'fd_other', 'fd_unspecified']],
     ['Narcomenudeo by drug', ['nmd_meth', 'nmd_marijuana', 'nmd_cocaine', 'nmd_heroin', 'nmd_opium', 'nmd_mdma', 'nmd_mda', 'nmd_lsd', 'nmd_unspecified']],
@@ -318,9 +337,9 @@ window.MX_LABELS = {
     ['Narcomenudeo, by legal status', ['pr_nm_all', 'pr_nm_sentenced', 'pr_nm_unsentenced', 'pr_nm_oficiosa', 'pr_nm_justificada', 'pr_nm_other']],
     ['Federal drug crimes, by legal status', ['pr_fd_all', 'pr_fd_sentenced', 'pr_fd_unsentenced', 'pr_fd_oficiosa', 'pr_fd_justificada', 'pr_fd_other']]
   ],
-  register: { army: 'SEDENA (army)', navy: 'SEMAR (navy)', federal_police_gn: 'Federal Police and Guardia Nacional', fgr: 'FGR (federal prosecutors)', state_police: 'State police', state_prosecutors: 'State prosecutors', federal_prosecutors: 'Federal prosecutor (FGR)', state_prisons: 'State prisons', federal_prisons: 'Federal prisons', totals: 'Totals and compiled files' },
-  registerOrder: ['army', 'navy', 'federal_police_gn', 'state_police', 'state_prosecutors', 'federal_prosecutors', 'state_prisons', 'federal_prisons', 'totals'],
-  agencyOrder: ['SEDENA', 'SEMAR', 'Federal Police', 'Guardia Nacional', 'FGR', 'State police', 'State prosecutors', 'Federal prosecutor (FGR)', 'All federal agencies', 'All agencies', 'State prisons', 'Federal prisons'],
+  register: { army: 'SEDENA (army)', navy: 'SEMAR (navy)', federal_police_gn: 'Federal Police and Guardia Nacional', fgr: 'FGR (federal prosecutors)', state_police: 'State police', state_prosecutors: 'State prosecutors', federal_prosecutors: 'Federal prosecutor (FGR)', state_prisons: 'State prisons', federal_prisons: 'Federal prisons', federal_courts: 'Federal courts', totals: 'Totals and compiled files' },
+  registerOrder: ['army', 'navy', 'federal_police_gn', 'state_police', 'state_prosecutors', 'federal_prosecutors', 'state_prisons', 'federal_prisons', 'federal_courts', 'totals'],
+  agencyOrder: ['SEDENA', 'SEMAR', 'Federal Police', 'Guardia Nacional', 'FGR', 'State police', 'State prosecutors', 'Federal prosecutor (FGR)', 'All federal agencies', 'All agencies', 'State prisons', 'Federal prisons', 'Federal courts'],
   // columns of Alejandro's compiled file, by the agency they belong to
   compiledAgency: { SEDENA: ['army', 'SEDENA'], GN: ['federal_police_gn', 'Guardia Nacional'], FGR: ['fgr', 'FGR'] },
   place: { '00': 'National', '01': 'Aguascalientes', '02': 'Baja California', '03': 'Baja California Sur', '04': 'Campeche', '05': 'Coahuila', '06': 'Colima', '07': 'Chiapas', '08': 'Chihuahua', '09': 'Mexico City', '10': 'Durango', '11': 'Guanajuato', '12': 'Guerrero', '13': 'Hidalgo', '14': 'Jalisco', '15': 'State of Mexico', '16': 'Michoacán', '17': 'Morelos', '18': 'Nayarit', '19': 'Nuevo León', '20': 'Oaxaca', '21': 'Puebla', '22': 'Querétaro', '23': 'Quintana Roo', '24': 'San Luis Potosí', '25': 'Sinaloa', '26': 'Sonora', '27': 'Tabasco', '28': 'Tamaulipas', '29': 'Tlaxcala', '30': 'Veracruz', '31': 'Yucatán', '32': 'Zacatecas', '99': 'State not identified' }
@@ -410,7 +429,7 @@ window.MX = (function () {
     const e = encodeURIComponent;
     return 'source_id=' + e(p.source_id) + '&agency=' + e(p.agency) + '&place=' + e(p.place) + '&year=' + p.year + '&drug=' + e(p.drug) + '&unit=' + e(p.unit);
   }
-  const fmt = v => v === null || v === undefined || !isFinite(v) ? '' : ['people', 'crimes', 'people_charged', 'case_crimes', 'prison'].includes(window.MX_STATE.unit) ? d3.format(',.0f')(v) : (Math.abs(v) >= 100 ? d3.format(',.0f')(v) : Math.abs(v) >= 1 ? d3.format(',.1f')(v) : d3.format(',.2~f')(v));
+  const fmt = v => v === null || v === undefined || !isFinite(v) ? '' : ['people', 'crimes', 'people_charged', 'case_crimes', 'prison', 'people_convicted', 'rulings'].includes(window.MX_STATE.unit) ? d3.format(',.0f')(v) : (Math.abs(v) >= 100 ? d3.format(',.0f')(v) : Math.abs(v) >= 1 ? d3.format(',.1f')(v) : d3.format(',.2~f')(v));
   return { rows, sources, status, lines, shown, where, fmt };
 })();
 
